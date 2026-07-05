@@ -1,0 +1,264 @@
+{
+  "generated_at": "2026-07-01T08:28:31.665Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "pair_count": 15,
+  "expected_pair_count": 15,
+  "midpoint_count": 15,
+  "neighbor_midpoint_count": 9,
+  "distant_midpoint_count": 6,
+  "spot_check_count": 3,
+  "station_order": [
+    {
+      "station_id": "site_5238",
+      "station_name": "Ballygunge"
+    },
+    {
+      "station_id": "site_5129",
+      "station_name": "Bidhannagar"
+    },
+    {
+      "station_id": "site_5110",
+      "station_name": "Fort William"
+    },
+    {
+      "station_id": "site_5111",
+      "station_name": "Jadavpur"
+    },
+    {
+      "station_id": "site_5126",
+      "station_name": "Rabindra Sarobar"
+    },
+    {
+      "station_id": "site_296",
+      "station_name": "Rabindra Bharati University"
+    }
+  ],
+  "distance_matrix_km": [
+    [
+      0,
+      8.237,
+      5.54,
+      1.91,
+      3.15,
+      7.378
+    ],
+    [
+      8.237,
+      0,
+      6.574,
+      10.147,
+      10.598,
+      3.306
+    ],
+    [
+      5.54,
+      6.574,
+      0,
+      6.849,
+      5.829,
+      3.697
+    ],
+    [
+      1.91,
+      10.147,
+      6.849,
+      0,
+      2.328,
+      9.15
+    ],
+    [
+      3.15,
+      10.598,
+      5.829,
+      2.328,
+      0,
+      8.877
+    ],
+    [
+      7.378,
+      3.306,
+      3.697,
+      9.15,
+      8.877,
+      0
+    ]
+  ],
+  "pairwise": [
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5129",
+      "to_station_name": "Bidhannagar",
+      "distance_km": 8.237
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5110",
+      "to_station_name": "Fort William",
+      "distance_km": 5.54
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "distance_km": 1.91
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "distance_km": 3.15
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "distance_km": 7.378
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5110",
+      "to_station_name": "Fort William",
+      "distance_km": 6.574
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "distance_km": 10.147
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "distance_km": 10.598
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "distance_km": 3.306
+    },
+    {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "distance_km": 6.849
+    },
+    {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "distance_km": 5.829
+    },
+    {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "distance_km": 3.697
+    },
+    {
+      "from_station_id": "site_5111",
+      "from_station_name": "Jadavpur",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "distance_km": 2.328
+    },
+    {
+      "from_station_id": "site_5111",
+      "from_station_name": "Jadavpur",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "distance_km": 9.15
+    },
+    {
+      "from_station_id": "site_5126",
+      "from_station_name": "Rabindra Sarobar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "distance_km": 8.877
+    }
+  ],
+  "nearestNeighbors": [
+    {
+      "station_id": "site_5238",
+      "station_name": "Ballygunge",
+      "nearest_station_id": "site_5111",
+      "nearest_station_name": "Jadavpur",
+      "nearest_distance_km": 1.91
+    },
+    {
+      "station_id": "site_5129",
+      "station_name": "Bidhannagar",
+      "nearest_station_id": "site_296",
+      "nearest_station_name": "Rabindra Bharati University",
+      "nearest_distance_km": 3.306
+    },
+    {
+      "station_id": "site_5110",
+      "station_name": "Fort William",
+      "nearest_station_id": "site_296",
+      "nearest_station_name": "Rabindra Bharati University",
+      "nearest_distance_km": 3.697
+    },
+    {
+      "station_id": "site_5111",
+      "station_name": "Jadavpur",
+      "nearest_station_id": "site_5238",
+      "nearest_station_name": "Ballygunge",
+      "nearest_distance_km": 1.91
+    },
+    {
+      "station_id": "site_5126",
+      "station_name": "Rabindra Sarobar",
+      "nearest_station_id": "site_5111",
+      "nearest_station_name": "Jadavpur",
+      "nearest_distance_km": 2.328
+    },
+    {
+      "station_id": "site_296",
+      "station_name": "Rabindra Bharati University",
+      "nearest_station_id": "site_5129",
+      "nearest_station_name": "Bidhannagar",
+      "nearest_distance_km": 3.306
+    }
+  ],
+  "spot_checks": [
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "haversine_km": 1.91,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "haversine_km": 3.15,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "haversine_km": 3.306,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    }
+  ]
+}

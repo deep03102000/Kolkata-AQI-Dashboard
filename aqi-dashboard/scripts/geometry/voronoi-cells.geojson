@@ -1,0 +1,237 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "generated_at": "2026-07-01T06:50:27.090Z",
+    "source": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\station_master.json",
+    "station_count": 6,
+    "cell_count": 6
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_5238",
+        "station_name": "Ballygunge",
+        "cell_index": 0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.410737,
+              22.54766341480697
+            ],
+            [
+              88.3821542191971,
+              22.555018359486684
+            ],
+            [
+              88.37141842568705,
+              22.5529123598721
+            ],
+            [
+              88.34860352912845,
+              22.53267037298108
+            ],
+            [
+              88.35783828726612,
+              22.514160313664377
+            ],
+            [
+              88.410737,
+              22.499585095624887
+            ],
+            [
+              88.410737,
+              22.54766341480697
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_5129",
+        "station_name": "Bidhannagar",
+        "cell_index": 1
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.410737,
+              22.61123
+            ],
+            [
+              88.3700060978498,
+              22.61123
+            ],
+            [
+              88.3821542191971,
+              22.555018359486684
+            ],
+            [
+              88.410737,
+              22.54766341480697
+            ],
+            [
+              88.410737,
+              22.61123
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_5110",
+        "station_name": "Fort William",
+        "cell_index": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.318,
+              22.528427075961538
+            ],
+            [
+              88.34860352912845,
+              22.53267037298108
+            ],
+            [
+              88.37141842568705,
+              22.5529123598721
+            ],
+            [
+              88.318,
+              22.595608645193092
+            ],
+            [
+              88.318,
+              22.528427075961538
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_5111",
+        "station_name": "Jadavpur",
+        "cell_index": 3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.410737,
+              22.482513
+            ],
+            [
+              88.410737,
+              22.499585095624887
+            ],
+            [
+              88.35783828726612,
+              22.514160313664377
+            ],
+            [
+              88.35333462402512,
+              22.482513
+            ],
+            [
+              88.410737,
+              22.482513
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_5126",
+        "station_name": "Rabindra Sarobar",
+        "cell_index": 4
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.318,
+              22.482513
+            ],
+            [
+              88.35333462402512,
+              22.482513
+            ],
+            [
+              88.35783828726612,
+              22.514160313664377
+            ],
+            [
+              88.34860352912845,
+              22.53267037298108
+            ],
+            [
+              88.318,
+              22.528427075961538
+            ],
+            [
+              88.318,
+              22.482513
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "site_296",
+        "station_name": "Rabindra Bharati University",
+        "cell_index": 5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              88.318,
+              22.61123
+            ],
+            [
+              88.318,
+              22.595608645193092
+            ],
+            [
+              88.37141842568705,
+              22.5529123598721
+            ],
+            [
+              88.3821542191971,
+              22.555018359486684
+            ],
+            [
+              88.3700060978498,
+              22.61123
+            ],
+            [
+              88.318,
+              22.61123
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}
