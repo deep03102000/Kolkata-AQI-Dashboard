@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-07-01T14:43:34.874Z",
+  "source_roads_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\road_network_linestrings_simplified.geojson",
+  "source_boundaries_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\voronoi_cell_boundaries.geojson",
+  "road_feature_count": 15877,
+  "roads_tested": 15877,
+  "skipped_road_count": 0,
+  "crossing_road_count": 654,
+  "total_intersection_count": 996,
+  "boundary_feature_count": 6,
+  "note": "Road features that cross at least one Voronoi cell boundary line."
+}

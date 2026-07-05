@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-07-01T15:04:16.492Z",
+  "source_roads_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\road_network_linestrings_simplified.geojson",
+  "source_boundaries_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\voronoi_cell_boundaries.geojson",
+  "source_crossings_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\road_boundary_crossings.geojson",
+  "road_feature_count": 15877,
+  "roads_processed": 15877,
+  "skipped_road_count": 0,
+  "split_road_count": 654,
+  "unchanged_road_count": 15223,
+  "output_segment_count": 16670,
+  "boundary_feature_count": 6,
+  "segment_count_mismatch_count": 0,
+  "length_mismatch_count": 0,
+  "length_tolerance_km": 0.01,
+  "spotcheck_road_count": 5,
+  "spotcheck_road_ids": [
+    "103082304",
+    "105878017",
+    "35875272",
+    "35873650",
+    "116513575"
+  ],
+  "note": "Road segments split at Voronoi boundaries, with untouched roads carried through unchanged."
+}

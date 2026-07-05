@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-07-01T14:20:31.951Z",
+  "source_voronoi_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\voronoi_cells.json",
+  "source_feature_count": 6,
+  "skipped_feature_count": 0,
+  "boundary_feature_count": 6,
+  "source_ring_count": 6,
+  "note": "Boundary linework extracted from the clipped Voronoi cells exported in Phase 8.7.1."
+}

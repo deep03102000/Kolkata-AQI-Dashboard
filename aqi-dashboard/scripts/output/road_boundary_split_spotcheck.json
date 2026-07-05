@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-07-01T15:04:16.492Z",
+  "source_segments_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\road_boundary_segments.geojson",
+  "segment_count_mismatch_count": 0,
+  "length_mismatch_count": 0,
+  "length_tolerance_km": 0.01,
+  "selected_road_count": 5,
+  "selected_road_ids": [
+    "103082304",
+    "105878017",
+    "35875272",
+    "35873650",
+    "116513575"
+  ],
+  "note": "Open this GeoJSON alongside the road layer to visually inspect a few split roads for gaps or duplicates."
+}

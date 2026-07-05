@@ -1,0 +1,145 @@
+{
+  "generated_at": "2026-07-01T08:28:31.665Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "midpoint_count": 15,
+  "neighbor_midpoint_count": 9,
+  "distant_midpoint_count": 6,
+  "midpoint_pairs": {
+    "site_5238__site_5129": {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5129",
+      "to_station_name": "Bidhannagar",
+      "midpoint_latitude": 22.5551961,
+      "midpoint_longitude": 88.3814622,
+      "voronoi_neighbor": true
+    },
+    "site_5238__site_5110": {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5110",
+      "to_station_name": "Fort William",
+      "midpoint_latitude": 22.5384317,
+      "midpoint_longitude": 88.3550985,
+      "voronoi_neighbor": true
+    },
+    "site_5238__site_5111": {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "midpoint_latitude": 22.5108373,
+      "midpoint_longitude": 88.3698986,
+      "voronoi_neighbor": true
+    },
+    "site_5238__site_5126": {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "midpoint_latitude": 22.5124314,
+      "midpoint_longitude": 88.3587005,
+      "voronoi_neighbor": true
+    },
+    "site_5238__site_296": {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "midpoint_latitude": 22.551808,
+      "midpoint_longitude": 88.3657897,
+      "voronoi_neighbor": true
+    },
+    "site_5129__site_5110": {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5110",
+      "to_station_name": "Fort William",
+      "midpoint_latitude": 22.5744672,
+      "midpoint_longitude": 88.3643653,
+      "voronoi_neighbor": false
+    },
+    "site_5129__site_5111": {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "midpoint_latitude": 22.5468719,
+      "midpoint_longitude": 88.3791673,
+      "voronoi_neighbor": false
+    },
+    "site_5129__site_5126": {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "midpoint_latitude": 22.5484666,
+      "midpoint_longitude": 88.3679664,
+      "voronoi_neighbor": false
+    },
+    "site_5129__site_296": {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "midpoint_latitude": 22.5878429,
+      "midpoint_longitude": 88.3750602,
+      "voronoi_neighbor": true
+    },
+    "site_5110__site_5111": {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "midpoint_latitude": 22.5301072,
+      "midpoint_longitude": 88.3528055,
+      "voronoi_neighbor": false
+    },
+    "site_5110__site_5126": {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "midpoint_latitude": 22.5317,
+      "midpoint_longitude": 88.3416057,
+      "voronoi_neighbor": true
+    },
+    "site_5110__site_296": {
+      "from_station_id": "site_5110",
+      "from_station_name": "Fort William",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "midpoint_latitude": 22.5710775,
+      "midpoint_longitude": 88.348691,
+      "voronoi_neighbor": true
+    },
+    "site_5111__site_5126": {
+      "from_station_id": "site_5111",
+      "from_station_name": "Jadavpur",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "midpoint_latitude": 22.5041069,
+      "midpoint_longitude": 88.3564077,
+      "voronoi_neighbor": true
+    },
+    "site_5111__site_296": {
+      "from_station_id": "site_5111",
+      "from_station_name": "Jadavpur",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "midpoint_latitude": 22.5434837,
+      "midpoint_longitude": 88.3634958,
+      "voronoi_neighbor": false
+    },
+    "site_5126__site_296": {
+      "from_station_id": "site_5126",
+      "from_station_name": "Rabindra Sarobar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "midpoint_latitude": 22.5450773,
+      "midpoint_longitude": 88.352295,
+      "voronoi_neighbor": false
+    }
+  }
+}

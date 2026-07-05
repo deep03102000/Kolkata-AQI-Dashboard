@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-07-01T17:08:57.075Z",
+  "source_segments_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\road_boundary_segments.geojson",
+  "source_cells_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\voronoi_cells.json",
+  "source_stations_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\station_master.json",
+  "source_segment_count": 16670,
+  "joined_segment_count": 16670,
+  "skipped_segment_count": 0,
+  "cell_count": 6,
+  "station_count": 6,
+  "unique_station_assignment_count": 6,
+  "voronoi_cell_assignment_count": 15290,
+  "boundary_line_tiebreaker_count": 0,
+  "nearest_station_fallback_count": 1380,
+  "min_assignment_distance_km": 0.019627,
+  "max_assignment_distance_km": 8.42548,
+  "average_assignment_distance_km": 2.058196,
+  "station_assignment_summary": [
+    {
+      "station_id": "site_5129",
+      "segment_count": 4517
+    },
+    {
+      "station_id": "site_296",
+      "segment_count": 3128
+    },
+    {
+      "station_id": "site_5110",
+      "segment_count": 2997
+    },
+    {
+      "station_id": "site_5238",
+      "segment_count": 2852
+    },
+    {
+      "station_id": "site_5126",
+      "segment_count": 2576
+    },
+    {
+      "station_id": "site_5111",
+      "segment_count": 600
+    }
+  ],
+  "station_assignment_min_count": 600,
+  "station_assignment_max_count": 4517,
+  "station_assignment_max_to_min_ratio": 7.528,
+  "station_assignment_balance_warning": true,
+  "note": "Split road segments tagged with the Voronoi cell that contains the segment midpoint, with a nearest-station fallback for out-of-bounds midpoints and a nearest-station tiebreaker for midpoint boundary hits. Segment counts are summarized per station as a sanity check."
+}

@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-07-01T08:28:31.665Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "station_ids": [
+    "site_5238",
+    "site_5129",
+    "site_5110",
+    "site_5111",
+    "site_5126",
+    "site_296"
+  ],
+  "station_names": [
+    "Ballygunge",
+    "Bidhannagar",
+    "Fort William",
+    "Jadavpur",
+    "Rabindra Sarobar",
+    "Rabindra Bharati University"
+  ],
+  "matrix_km": {
+    "site_5238": {
+      "site_5238": 0,
+      "site_5129": 8.237,
+      "site_5110": 5.54,
+      "site_5111": 1.91,
+      "site_5126": 3.15,
+      "site_296": 7.378
+    },
+    "site_5129": {
+      "site_5238": 8.237,
+      "site_5129": 0,
+      "site_5110": 6.574,
+      "site_5111": 10.147,
+      "site_5126": 10.598,
+      "site_296": 3.306
+    },
+    "site_5110": {
+      "site_5238": 5.54,
+      "site_5129": 6.574,
+      "site_5110": 0,
+      "site_5111": 6.849,
+      "site_5126": 5.829,
+      "site_296": 3.697
+    },
+    "site_5111": {
+      "site_5238": 1.91,
+      "site_5129": 10.147,
+      "site_5110": 6.849,
+      "site_5111": 0,
+      "site_5126": 2.328,
+      "site_296": 9.15
+    },
+    "site_5126": {
+      "site_5238": 3.15,
+      "site_5129": 10.598,
+      "site_5110": 5.829,
+      "site_5111": 2.328,
+      "site_5126": 0,
+      "site_296": 8.877
+    },
+    "site_296": {
+      "site_5238": 7.378,
+      "site_5129": 3.306,
+      "site_5110": 3.697,
+      "site_5111": 9.15,
+      "site_5126": 8.877,
+      "site_296": 0
+    }
+  }
+}

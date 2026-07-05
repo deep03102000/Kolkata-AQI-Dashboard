@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-07-01T08:28:31.665Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "spot_checks": [
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5111",
+      "to_station_name": "Jadavpur",
+      "haversine_km": 1.91,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    },
+    {
+      "from_station_id": "site_5238",
+      "from_station_name": "Ballygunge",
+      "to_station_id": "site_5126",
+      "to_station_name": "Rabindra Sarobar",
+      "haversine_km": 3.15,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    },
+    {
+      "from_station_id": "site_5129",
+      "from_station_name": "Bidhannagar",
+      "to_station_id": "site_296",
+      "to_station_name": "Rabindra Bharati University",
+      "haversine_km": 3.306,
+      "google_maps_review_note": "Manually compare this pair in Google Maps before trusting the pipeline."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-07-01T12:18:30.443Z",
+  "selected_source_kind": "geoBoundaries-fallback",
+  "boundary_coverage": {
+    "station_count": 6,
+    "inside_count": 6,
+    "outside_station_ids": [],
+    "complete": true
+  },
+  "fallback_url": "https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/IND/ADM2/geoBoundaries-IND-ADM2.geojson?download=1"
+}

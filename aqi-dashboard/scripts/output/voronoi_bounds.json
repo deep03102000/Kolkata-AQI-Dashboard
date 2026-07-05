@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-07-01T12:18:00.392Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "bounds": {
+    "minLongitude": 88.308,
+    "minLatitude": 22.472513,
+    "maxLongitude": 88.420737,
+    "maxLatitude": 22.62123,
+    "longitudePadding": 0.03,
+    "latitudePadding": 0.03
+  }
+}

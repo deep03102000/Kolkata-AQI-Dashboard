@@ -1,0 +1,966 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "generated_at": "2026-07-01T15:04:16.490Z",
+    "note": "Use this small sample to visually inspect split roads for gaps or duplicate overlaps.",
+    "selected_road_count": 5,
+    "selected_road_ids": [
+      "103082304",
+      "105878017",
+      "35875272",
+      "35873650",
+      "116513575"
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "inspection_role": "source_road",
+        "inspection_road_id": "103082304",
+        "expected_segment_count": 5,
+        "actual_segment_count": 5,
+        "source_length_km": 0.12608,
+        "segment_length_km": 0.126081
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3566091,
+            22.5644941
+          ],
+          [
+            88.3563965,
+            22.5645922
+          ],
+          [
+            88.3564948,
+            22.5648658
+          ],
+          [
+            88.3562428,
+            22.5650074
+          ],
+          [
+            88.3563992,
+            22.5653303
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "boundary_split_applied": true,
+        "segment_index": 0,
+        "segment_count": 5,
+        "segment_kind": "split",
+        "boundary_intersection_count": 6,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "103082304"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35638844178784,
+            22.564925563185877
+          ],
+          [
+            88.3562428,
+            22.5650074
+          ],
+          [
+            88.35625487179813,
+            22.565032323168875
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "boundary_split_applied": true,
+        "segment_index": 1,
+        "segment_count": 5,
+        "segment_kind": "split",
+        "boundary_intersection_count": 6,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "103082304"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35625487179813,
+            22.565032323168875
+          ],
+          [
+            88.35625487179813,
+            22.56503232316888
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "boundary_split_applied": true,
+        "segment_index": 2,
+        "segment_count": 5,
+        "segment_kind": "split",
+        "boundary_intersection_count": 6,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "103082304"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35625487179813,
+            22.56503232316888
+          ],
+          [
+            88.3563992,
+            22.5653303
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "boundary_split_applied": true,
+        "segment_index": 3,
+        "segment_count": 5,
+        "segment_kind": "split",
+        "boundary_intersection_count": 6,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "103082304"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3566091,
+            22.5644941
+          ],
+          [
+            88.3563965,
+            22.5645922
+          ],
+          [
+            88.35648775289688,
+            22.56484618568248
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 103082304,
+        "highway": "service",
+        "name": "Temple St",
+        "boundary_split_applied": true,
+        "segment_index": 4,
+        "segment_count": 5,
+        "segment_kind": "split",
+        "boundary_intersection_count": 6,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "103082304"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35648775289688,
+            22.56484618568248
+          ],
+          [
+            88.3564948,
+            22.5648658
+          ],
+          [
+            88.35638844178784,
+            22.564925563185877
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 105878017,
+        "highway": "tertiary",
+        "name": "Dr Suresh Sarkar Road",
+        "surface": "asphalt",
+        "inspection_role": "source_road",
+        "inspection_road_id": "105878017",
+        "expected_segment_count": 4,
+        "actual_segment_count": 4,
+        "source_length_km": 1.14349,
+        "segment_length_km": 1.14349
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3712467,
+            22.5512646
+          ],
+          [
+            88.3707368,
+            22.551694
+          ],
+          [
+            88.3707482,
+            22.552655
+          ],
+          [
+            88.3700538,
+            22.5556571
+          ],
+          [
+            88.3688584,
+            22.5571011
+          ],
+          [
+            88.3681012,
+            22.5587187
+          ],
+          [
+            88.3678759,
+            22.560143
+          ],
+          [
+            88.3682034,
+            22.5606567
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 105878017,
+        "highway": "tertiary",
+        "name": "Dr Suresh Sarkar Road",
+        "surface": "asphalt",
+        "boundary_split_applied": true,
+        "segment_index": 0,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 3,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "105878017"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.37052315065758,
+            22.553627955977653
+          ],
+          [
+            88.3700538,
+            22.5556571
+          ],
+          [
+            88.3688584,
+            22.5571011
+          ],
+          [
+            88.3681012,
+            22.5587187
+          ],
+          [
+            88.3678759,
+            22.560143
+          ],
+          [
+            88.3682034,
+            22.5606567
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 105878017,
+        "highway": "tertiary",
+        "name": "Dr Suresh Sarkar Road",
+        "surface": "asphalt",
+        "boundary_split_applied": true,
+        "segment_index": 1,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 3,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "105878017"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3712467,
+            22.5512646
+          ],
+          [
+            88.3707368,
+            22.551694
+          ],
+          [
+            88.37074415713275,
+            22.552314193384206
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 105878017,
+        "highway": "tertiary",
+        "name": "Dr Suresh Sarkar Road",
+        "surface": "asphalt",
+        "boundary_split_applied": true,
+        "segment_index": 2,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 3,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "105878017"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.37074415713275,
+            22.552314193384206
+          ],
+          [
+            88.3707482,
+            22.552655
+          ],
+          [
+            88.37052315065758,
+            22.55362795597765
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 105878017,
+        "highway": "tertiary",
+        "name": "Dr Suresh Sarkar Road",
+        "surface": "asphalt",
+        "boundary_split_applied": true,
+        "segment_index": 3,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 3,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5110"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "105878017"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.37052315065758,
+            22.55362795597765
+          ],
+          [
+            88.37052315065758,
+            22.553627955977653
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35875272,
+        "highway": "residential",
+        "name": "Kavi Barathi Road",
+        "inspection_role": "source_road",
+        "inspection_road_id": "35875272",
+        "expected_segment_count": 4,
+        "actual_segment_count": 4,
+        "source_length_km": 0.447765,
+        "segment_length_km": 0.447765
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3592155,
+            22.5137629
+          ],
+          [
+            88.3588705,
+            22.5144976
+          ],
+          [
+            88.3581492,
+            22.5151101
+          ],
+          [
+            88.3569278,
+            22.5155165
+          ],
+          [
+            88.3557136,
+            22.515523
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35875272,
+        "highway": "residential",
+        "name": "Kavi Barathi Road",
+        "boundary_split_applied": true,
+        "segment_index": 0,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5126",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35875272"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35720823689194,
+            22.51542318941143
+          ],
+          [
+            88.35720823689192,
+            22.515423189411433
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35875272,
+        "highway": "residential",
+        "name": "Kavi Barathi Road",
+        "boundary_split_applied": true,
+        "segment_index": 1,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5126",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35875272"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35720823689192,
+            22.515423189411433
+          ],
+          [
+            88.3569278,
+            22.5155165
+          ],
+          [
+            88.3557136,
+            22.515523
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35875272,
+        "highway": "residential",
+        "name": "Kavi Barathi Road",
+        "boundary_split_applied": true,
+        "segment_index": 2,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5126",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35875272"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3592155,
+            22.5137629
+          ],
+          [
+            88.35920582317436,
+            22.51378350743129
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35875272,
+        "highway": "residential",
+        "name": "Kavi Barathi Road",
+        "boundary_split_applied": true,
+        "segment_index": 3,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5126",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35875272"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35920582317436,
+            22.51378350743129
+          ],
+          [
+            88.3588705,
+            22.5144976
+          ],
+          [
+            88.3581492,
+            22.5151101
+          ],
+          [
+            88.35720823689194,
+            22.51542318941143
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35873650,
+        "highway": "residential",
+        "name": "South End Park",
+        "inspection_role": "source_road",
+        "inspection_road_id": "35873650",
+        "expected_segment_count": 4,
+        "actual_segment_count": 4,
+        "source_length_km": 0.292913,
+        "segment_length_km": 0.292913
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3665334,
+            22.513672
+          ],
+          [
+            88.3664541,
+            22.5117695
+          ],
+          [
+            88.3672428,
+            22.5117195
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35873650,
+        "highway": "residential",
+        "name": "South End Park",
+        "boundary_split_applied": true,
+        "segment_index": 0,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35873650"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3665334,
+            22.513672
+          ],
+          [
+            88.36645479624224,
+            22.511786203667857
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35873650,
+        "highway": "residential",
+        "name": "South End Park",
+        "boundary_split_applied": true,
+        "segment_index": 1,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35873650"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36645479624224,
+            22.511786203667857
+          ],
+          [
+            88.3664541,
+            22.5117695
+          ],
+          [
+            88.36653374552385,
+            22.511764450835308
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35873650,
+        "highway": "residential",
+        "name": "South End Park",
+        "boundary_split_applied": true,
+        "segment_index": 2,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35873650"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36653374552385,
+            22.511764450835308
+          ],
+          [
+            88.36653374552387,
+            22.511764450835308
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 35873650,
+        "highway": "residential",
+        "name": "South End Park",
+        "boundary_split_applied": true,
+        "segment_index": 3,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_5111",
+          "site_5238"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "35873650"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36653374552387,
+            22.511764450835308
+          ],
+          [
+            88.3672428,
+            22.5117195
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 116513575,
+        "highway": "service",
+        "inspection_role": "source_road",
+        "inspection_road_id": "116513575",
+        "expected_segment_count": 4,
+        "actual_segment_count": 4,
+        "source_length_km": 0.174364,
+        "segment_length_km": 0.174363
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3706346,
+            22.6119419
+          ],
+          [
+            88.3697712,
+            22.6121171
+          ],
+          [
+            88.3699607,
+            22.6128485
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 116513575,
+        "highway": "service",
+        "boundary_split_applied": true,
+        "segment_index": 0,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5129"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "116513575"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3706346,
+            22.6119419
+          ],
+          [
+            88.3698164000529,
+            22.61210792806432
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 116513575,
+        "highway": "service",
+        "boundary_split_applied": true,
+        "segment_index": 1,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5129"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "116513575"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3698164000529,
+            22.61210792806432
+          ],
+          [
+            88.3697712,
+            22.6121171
+          ],
+          [
+            88.36979476331402,
+            22.612208045687943
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 116513575,
+        "highway": "service",
+        "boundary_split_applied": true,
+        "segment_index": 2,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5129"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "116513575"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36979476331402,
+            22.612208045687943
+          ],
+          [
+            88.36979476331402,
+            22.612208045687957
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "osm_type": "way",
+        "osm_id": 116513575,
+        "highway": "service",
+        "boundary_split_applied": true,
+        "segment_index": 3,
+        "segment_count": 4,
+        "segment_kind": "split",
+        "boundary_intersection_count": 4,
+        "boundary_station_ids": [
+          "site_296",
+          "site_5129"
+        ],
+        "inspection_role": "split_segment",
+        "inspection_road_id": "116513575"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36979476331402,
+            22.612208045687957
+          ],
+          [
+            88.3699607,
+            22.6128485
+          ]
+        ]
+      }
+    }
+  ]
+}

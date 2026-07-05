@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "stationWeights": {
+    "pm25": 0.28,
+    "pm10": 0.18,
+    "no2": 0.14,
+    "so2": 0.1,
+    "co": 0.12,
+    "o3": 0.1,
+    "nh3": 0.08
+  },
+  "riskBands": [
+    { "label": "Low", "max": 50 },
+    { "label": "Moderate", "max": 100 },
+    { "label": "High", "max": 200 },
+    { "label": "Critical", "max": 500 }
+  ],
+  "notes": "Example configuration only. Tune weights as needed for your reporting layer."
+}

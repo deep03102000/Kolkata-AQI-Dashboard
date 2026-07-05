@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-07-01T12:18:00.391Z",
+  "source": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "points": [
+    {
+      "station_id": "site_5238",
+      "station_name": "Ballygunge",
+      "longitude": 88.3721923,
+      "latitude": 22.5191616,
+      "point": [
+        88.3721923,
+        22.5191616
+      ]
+    },
+    {
+      "station_id": "site_5129",
+      "station_name": "Bidhannagar",
+      "longitude": 88.390737,
+      "latitude": 22.59123,
+      "point": [
+        88.390737,
+        22.59123
+      ]
+    },
+    {
+      "station_id": "site_5110",
+      "station_name": "Fort William",
+      "longitude": 88.338,
+      "latitude": 22.5577,
+      "point": [
+        88.338,
+        22.5577
+      ]
+    },
+    {
+      "station_id": "site_5111",
+      "station_name": "Jadavpur",
+      "longitude": 88.3676051,
+      "latitude": 22.502513,
+      "point": [
+        88.3676051,
+        22.502513
+      ]
+    },
+    {
+      "station_id": "site_5126",
+      "station_name": "Rabindra Sarobar",
+      "longitude": 88.34521,
+      "latitude": 22.5057,
+      "point": [
+        88.34521,
+        22.5057
+      ]
+    },
+    {
+      "station_id": "site_296",
+      "station_name": "Rabindra Bharati University",
+      "longitude": 88.3593841,
+      "latitude": 22.5844542,
+      "point": [
+        88.3593841,
+        22.5844542
+      ]
+    }
+  ]
+}

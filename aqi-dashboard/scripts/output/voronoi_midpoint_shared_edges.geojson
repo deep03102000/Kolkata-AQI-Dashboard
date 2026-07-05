@@ -1,0 +1,266 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5238__site_5129",
+        "from_station_id": "site_5238",
+        "from_station_name": "Ballygunge",
+        "to_station_id": "site_5129",
+        "to_station_name": "Bidhannagar",
+        "midpoint_latitude": 22.5551961,
+        "midpoint_longitude": 88.3814622,
+        "midpoint_to_edge_distance_km": 0.074,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.3821542191971,
+            22.555018359486684
+          ],
+          [
+            88.39933670484393,
+            22.550596948138924
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5238__site_5110",
+        "from_station_id": "site_5238",
+        "from_station_name": "Ballygunge",
+        "to_station_id": "site_5110",
+        "to_station_name": "Fort William",
+        "midpoint_latitude": 22.5384317,
+        "midpoint_longitude": 88.3550985,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.34860352912845,
+            22.53267037298108
+          ],
+          [
+            88.37141842568705,
+            22.5529123598721
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5238__site_5111",
+        "from_station_id": "site_5238",
+        "from_station_name": "Ballygunge",
+        "to_station_id": "site_5111",
+        "to_station_name": "Jadavpur",
+        "midpoint_latitude": 22.5108373,
+        "midpoint_longitude": 88.3698986,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35783828726612,
+            22.514160313664377
+          ],
+          [
+            88.37207199371808,
+            22.51023849091434
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5238__site_5126",
+        "from_station_id": "site_5238",
+        "from_station_name": "Ballygunge",
+        "to_station_id": "site_5126",
+        "to_station_name": "Rabindra Sarobar",
+        "midpoint_latitude": 22.5124314,
+        "midpoint_longitude": 88.3587005,
+        "midpoint_to_edge_distance_km": 0.212,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.34860352912845,
+            22.53267037298108
+          ],
+          [
+            88.35783828726612,
+            22.514160313664377
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5238__site_296",
+        "from_station_id": "site_5238",
+        "from_station_name": "Ballygunge",
+        "to_station_id": "site_296",
+        "to_station_name": "Rabindra Bharati University",
+        "midpoint_latitude": 22.551808,
+        "midpoint_longitude": 88.3657897,
+        "midpoint_to_edge_distance_km": 0.591,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": true,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.37141842568705,
+            22.5529123598721
+          ],
+          [
+            88.3821542191971,
+            22.555018359486684
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5129__site_296",
+        "from_station_id": "site_5129",
+        "from_station_name": "Bidhannagar",
+        "to_station_id": "site_296",
+        "to_station_name": "Rabindra Bharati University",
+        "midpoint_latitude": 22.5878429,
+        "midpoint_longitude": 88.3750602,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.36784495805092,
+            22.62123
+          ],
+          [
+            88.3821542191971,
+            22.555018359486684
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5110__site_5126",
+        "from_station_id": "site_5110",
+        "from_station_name": "Fort William",
+        "to_station_id": "site_5126",
+        "to_station_name": "Rabindra Sarobar",
+        "midpoint_latitude": 22.5317,
+        "midpoint_longitude": 88.3416057,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.308,
+            22.5270405375
+          ],
+          [
+            88.34860352912845,
+            22.53267037298108
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5110__site_296",
+        "from_station_id": "site_5110",
+        "from_station_name": "Fort William",
+        "to_station_id": "site_296",
+        "to_station_name": "Rabindra Bharati University",
+        "midpoint_latitude": 22.5710775,
+        "midpoint_longitude": 88.348691,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.34431725856275,
+            22.57457378379443
+          ],
+          [
+            88.37141842568705,
+            22.5529123598721
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "pair_key": "site_5111__site_5126",
+        "from_station_id": "site_5111",
+        "from_station_name": "Jadavpur",
+        "to_station_id": "site_5126",
+        "to_station_name": "Rabindra Sarobar",
+        "midpoint_latitude": 22.5041069,
+        "midpoint_longitude": 88.3564077,
+        "midpoint_to_edge_distance_km": 0,
+        "midpoint_within_tolerance": true,
+        "needs_manual_inspection": false,
+        "voronoi_neighbor": true
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            88.35575989661756,
+            22.499555429317475
+          ],
+          [
+            88.35783828726612,
+            22.514160313664377
+          ]
+        ]
+      }
+    }
+  ]
+}
