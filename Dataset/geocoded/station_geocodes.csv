@@ -1,0 +1,7 @@
+station_name,latitude,longitude,reference_place,source_note,source_url
+Ballygunge,22.5191616,88.3721923,Ballygunge Junction railway station,Used the Ballygunge landmark with a documented map coordinate; cross-checked against locality/map listings.,https://en.wikipedia.org/wiki/Ballygunge_Junction_railway_station
+Bidhannagar,22.59123,88.390737,Bidhannagar Road railway station,Used the closest clearly mapped station point in Salt Lake/Bidhannagar; cross-checked against city/map listings.,https://en.wikipedia.org/wiki/Bidhannagar_Road_railway_station
+Fort William,22.5577,88.338,Fort William,Fort location is directly documented; map cross-check aligns with central Kolkata landmark listing.,https://en.wikipedia.org/wiki/Fort_William%2C_West_Bengal
+Jadavpur,22.502513,88.3676051,Jadavpur neighbourhood / Jadavpur University area,Used the Jadavpur neighbourhood centroid because the monitoring station is identified as Jadavpur/Jadavpur University in public reporting.,https://en.wikipedia.org/wiki/Jadavpur
+Rabindra Sarobar,22.5057,88.34521,Rabindra Sarobar metro station / lake area,Used the metro/lake-area point associated with Rabindra Sarobar; map cross-check matches the south Kolkata lake location.,https://en.wikipedia.org/wiki/Rabindra_Sarobar_metro_station
+Rabindra Bharati University,22.5844542,88.3593841,Rabindra Bharati University,University coordinates are directly documented; map cross-check aligns with Jorasanko campus location.,https://en.wikipedia.org/wiki/Rabindra_Bharati_University
