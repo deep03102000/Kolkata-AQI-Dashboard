@@ -1,0 +1,47 @@
+{
+  "name": "aqi-dashboard",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host localhost --port 5173 --strictPort --configLoader native",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host localhost --port 4173 --strictPort --configLoader native",
+    "station:distance": "node scripts/geometry/station-distance.mjs",
+    "validate:midpoints": "node scripts/geometry/voronoi-midpoint-validation.mjs",
+    "validate:geojson": "node scripts/geometry/validate-voronoi-geojson.mjs",
+    "road:network": "node scripts/geometry/road-network-acquisition.mjs",
+    "road:fetch": "node scripts/fetch-roads.js",
+    "road:convert": "node scripts/geometry/road-network-conversion.mjs",
+    "road:simplify": "node scripts/geometry/road-network-simplify.mjs",
+    "prep:geo": "node scripts/generate-voronoi.js && node scripts/clip-voronoi-cells.js && node scripts/geometry/validate-voronoi-geojson.mjs",
+    "road:boundaries": "node scripts/geometry/road-network-voronoi-boundaries.mjs",
+    "road:crossings": "node scripts/geometry/road-network-boundary-crossings.mjs",
+    "road:split": "node scripts/geometry/road-network-boundary-split.mjs",
+    "road:join": "node scripts/geometry/road-network-segment-station-join.mjs",
+    "road:validate-export": "node scripts/geometry/road-network-static-validate.mjs",
+    "road:check-size": "node scripts/geometry/road-network-static-size.mjs",
+    "road:export": "node scripts/geometry/road-network-static-output.mjs && node scripts/geometry/road-network-static-validate.mjs && node scripts/geometry/road-network-static-size.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
+    "@turf/turf": "^7.3.5",
+    "@types/leaflet": "^1.9.21",
+    "autoprefixer": "^10.5.2",
+    "d3-delaunay": "^6.0.4",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.0"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "chart.js": "^4.5.1",
+    "leaflet": "^1.9.4",
+    "react": "^19.2.7",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "^19.2.7",
+    "react-leaflet": "^5.0.0"
+  }
+}

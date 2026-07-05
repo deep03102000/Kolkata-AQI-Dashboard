@@ -1,0 +1,38 @@
+[
+  {
+    "station_id": "site_5238",
+    "station_name": "Ballygunge",
+    "latitude": 22.5191616,
+    "longitude": 88.3721923
+  },
+  {
+    "station_id": "site_5129",
+    "station_name": "Bidhannagar",
+    "latitude": 22.59123,
+    "longitude": 88.390737
+  },
+  {
+    "station_id": "site_5110",
+    "station_name": "Fort William",
+    "latitude": 22.5577,
+    "longitude": 88.338
+  },
+  {
+    "station_id": "site_5111",
+    "station_name": "Jadavpur",
+    "latitude": 22.502513,
+    "longitude": 88.3676051
+  },
+  {
+    "station_id": "site_5126",
+    "station_name": "Rabindra Sarobar",
+    "latitude": 22.5057,
+    "longitude": 88.34521
+  },
+  {
+    "station_id": "site_296",
+    "station_name": "Rabindra Bharati University",
+    "latitude": 22.5844542,
+    "longitude": 88.3593841
+  }
+]

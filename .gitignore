@@ -1,0 +1,6 @@
+aqi-dashboard/node_modules/
+aqi-dashboard/dist/
+aqi-dashboard/*.log
+aqi-dashboard/.env.local
+*.pyc
+__pycache__/
