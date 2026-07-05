@@ -1,6 +1,6 @@
-﻿# Kolkata AQI Dashboard
+# Kolkata AQI Dashboard
 
-A lightweight React + Vite dashboard for six Kolkata air-quality stations. The repository combines a static data-prep pipeline, a map-first frontend, Voronoi coverage and road overlays, a comparison table, and an optional live WAQI integration that can run through a serverless proxy.
+A lightweight React + Vite dashboard for six Kolkata air-quality stations. The repository combines a static data-prep pipeline, a map-first frontend, Voronoi coverage and road overlays, a comparison table, and an optional live WAQI integration that runs through a same-origin proxy on Render.
 
 ## What It Does
 
@@ -55,7 +55,7 @@ npm run preview
 
 ## Live AQI Setup
 
-- Production deployments should use `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi`.
+- Render deployments should use `VITE_WAQI_PROXY_URL=/api/waqi`.
 - The proxy reads `WAQI_API_TOKEN` from the deployment environment.
 - Local development can fall back to `VITE_WAQI_API_TOKEN` if the proxy is not configured.
 - Station-to-WAQI UID mappings live in `aqi-dashboard/src/data/waqiStationUids.ts`.

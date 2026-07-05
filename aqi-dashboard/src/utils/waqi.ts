@@ -80,7 +80,11 @@ export function getWaqiProxyUrl() {
     return configuredProxy
   }
 
-  return import.meta.env.DEV ? '/.netlify/functions/waqi' : ''
+  if (import.meta.env.DEV) {
+    return '/.netlify/functions/waqi'
+  }
+
+  return '/api/waqi'
 }
 
 export function hasWaqiToken() {

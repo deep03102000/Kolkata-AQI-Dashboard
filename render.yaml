@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: kolkata-aqi-dashboard
+    env: node
+    plan: starter
+    rootDir: aqi-dashboard
+    buildCommand: npm ci && npm run build
+    startCommand: node server.mjs
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: VITE_WAQI_PROXY_URL
+        value: /api/waqi
+      - key: WAQI_API_TOKEN
+        sync: false
