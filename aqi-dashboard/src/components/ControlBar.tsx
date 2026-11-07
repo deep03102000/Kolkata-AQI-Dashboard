@@ -60,10 +60,17 @@ export function ControlBar() {
   const isHistorical = mode === 'Historical'
 
   return (
-    <div className="sticky top-2 z-[1100] rounded-2xl border border-slate-200 bg-white/95 p-2.5 shadow-md shadow-slate-200/70 backdrop-blur sm:p-3">
-      <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:gap-4">
-        <div className="flex items-center gap-2.5">
-          <div role="group" aria-label="Data view" className="flex shrink-0 rounded-full bg-slate-100 p-0.5">
+    <div className="animate-fade-up sticky top-2 z-[1100] rounded-2xl border border-slate-200/80 bg-white/90 p-2 backdrop-blur-sm sm:p-2.5" style={{ animationDelay: '40ms' }}>
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+        <div className="flex items-center gap-2">
+          {/* Two equal halves with a highlight that slides to the active one. */}
+          <div role="group" aria-label="Data view" className="relative grid shrink-0 grid-cols-2 rounded-full bg-slate-100 p-0.5">
+            <span
+              aria-hidden="true"
+              className={`absolute inset-y-0.5 left-0.5 w-[calc(50%-2px)] rounded-full bg-white shadow-sm ring-1 ring-slate-200/80 transition-transform duration-300 ease-out ${
+                isHistorical ? 'translate-x-full' : 'translate-x-0'
+              }`}
+            />
             {(['Live', 'Historical'] as StationMode[]).map((option) => {
               const active = mode === option
               return (
@@ -72,18 +79,14 @@ export function ControlBar() {
                   type="button"
                   onClick={() => switchMode(option)}
                   aria-pressed={active}
-                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
-                    active
-                      ? option === 'Live'
-                        ? 'bg-emerald-600 text-white shadow-sm'
-                        : 'bg-slate-900 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
+                  className={`relative flex items-center justify-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors duration-300 ${
+                    active ? 'text-slate-900' : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
                   {option === 'Live' ? (
                     <span
                       aria-hidden="true"
-                      className={`h-1.5 w-1.5 rounded-full ${active ? 'animate-pulse bg-white' : 'bg-emerald-500'}`}
+                      className={`h-1.5 w-1.5 rounded-full bg-emerald-500 ${active ? 'live-dot' : 'opacity-50'}`}
                     />
                   ) : null}
                   {option}
@@ -151,8 +154,8 @@ export function ControlBar() {
                     aria-pressed={active}
                     className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium transition ${
                       active
-                        ? 'border-sky-600 bg-sky-600 text-white'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900'
+                        ? 'border-transparent bg-slate-900 text-white'
+                        : 'border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
                     {preset.label}
@@ -162,10 +165,7 @@ export function ControlBar() {
             </div>
           </div>
         ) : (
-          <p className="text-xs leading-5 text-slate-500 lg:flex-1">
-            Official CPCB station readings, published hourly about 30–40 minutes after each hour. Switch to Historical
-            to compare stations over any dates in 2024–2025.
-          </p>
+          <p className="px-1 text-xs text-slate-500 lg:flex-1">Official CPCB readings · updated hourly</p>
         )}
       </div>
     </div>

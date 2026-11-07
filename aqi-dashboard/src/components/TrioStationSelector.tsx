@@ -91,7 +91,7 @@ export function TrioStationSelector() {
 
   return (
     <section className="min-w-0">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Three-station bridges</p>
+      <p className="eyebrow">Three-station bridges</p>
       <p className="mt-1 text-xs leading-5 text-slate-500">
         Tick stations to draw the shared area and roads between them.
       </p>

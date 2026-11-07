@@ -13,7 +13,7 @@ type StationGeo = {
 }
 
 function SkeletonLine({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded-full bg-slate-200/80 ${className}`} />
+  return <div className={`skeleton rounded-full ${className}`} />
 }
 
 function AlertBanner({ tone, children }: { tone: 'error' | 'loading'; children: React.ReactNode }) {
@@ -81,9 +81,9 @@ export function SelectedStationChartPanel() {
   }, [dateRange.endDate, dateRange.startDate])
 
   return (
-    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white/90 p-3.5 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-4">
+    <section className="card">
       <div className="mb-3 min-w-0">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-base font-semibold text-slate-900">
           Pollutant trend{selectedStation ? ` · ${selectedStation.station_name}` : ''}
         </h2>
         <p className="mt-0.5 text-xs text-slate-500">
@@ -91,36 +91,20 @@ export function SelectedStationChartPanel() {
             ? dateRange.startDate && dateRange.endDate
               ? historicalRangeLabel
               : 'Pick a date range at the top'
-            : 'Most recent recorded day (live readings have no history yet; switch to Historical for any range)'}
+            : 'Last recorded day of history · switch to Historical for any range'}
         </p>
       </div>
 
       {!selectedStation ? (
-        <p className="rounded-2xl border border-dashed border-slate-200 px-3 py-6 text-center text-sm leading-6 text-slate-500">
-          Select a station on the map, in the list, or with the picker at the top to see its trend.
-        </p>
+        <p className="rounded-xl bg-slate-50 px-3 py-8 text-center text-sm text-slate-400">Select a station to see its trend.</p>
       ) : status === 'loading' ? (
-        <div className="space-y-3.5">
-          <AlertBanner tone="loading">Loading chart data...</AlertBanner>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
-            <SkeletonLine className="h-3 w-24" />
-            <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-3">
-                <SkeletonLine className="h-3 w-14" />
-                <SkeletonLine className="mt-2.5 h-7 w-14" />
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-3">
-                <SkeletonLine className="h-3 w-14" />
-                <SkeletonLine className="mt-2.5 h-7 w-14" />
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-3">
-                <SkeletonLine className="h-3 w-14" />
-                <SkeletonLine className="mt-2.5 h-7 w-14" />
-              </div>
-            </div>
-            <SkeletonLine className="mt-3 h-9 w-full rounded-2xl" />
-            <SkeletonLine className="mt-2.5 h-56 w-full rounded-2xl" />
+        <div className="space-y-3" aria-label="Loading chart">
+          <div className="flex gap-8">
+            <SkeletonLine className="h-9 w-16 rounded-lg" />
+            <SkeletonLine className="h-9 w-16 rounded-lg" />
+            <SkeletonLine className="h-9 w-16 rounded-lg" />
           </div>
+          <SkeletonLine className="h-64 w-full rounded-xl" />
         </div>
       ) : status === 'error' || !historicalData ? (
         <AlertBanner tone="error">

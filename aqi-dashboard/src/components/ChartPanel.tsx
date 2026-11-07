@@ -174,14 +174,14 @@ export default function ChartPanel({ stationName, records }: Props) {
 
       <SummaryStats records={displayRecords} />
 
-      <div className="mb-3.5 mt-3.5 flex flex-wrap gap-1.5">
+      <div className="mb-3 mt-4 flex flex-wrap gap-1">
         {SERIES.map((series) => {
           const checked = activeSeries[series.key]
 
           return (
             <label
               key={series.key}
-              className={`flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition ${checked ? 'border-slate-300 bg-slate-50 text-slate-800' : 'border-slate-200 bg-white text-slate-400'}`}
+              className={`flex cursor-pointer items-center rounded-full px-2.5 py-1 text-xs transition-all duration-200 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-sky-300 ${checked ? 'bg-slate-100 text-slate-800' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
             >
               <input
                 type="checkbox"
@@ -193,10 +193,13 @@ export default function ChartPanel({ stationName, records }: Props) {
                     [series.key]: nextChecked,
                   }))
                 }}
-                className="h-3 w-3 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                className="sr-only"
               />
-              <span className="inline-flex items-center gap-1">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: series.color }} />
+              <span className="inline-flex items-center gap-1.5">
+                <span
+                  className={`h-2 w-2 rounded-full transition-transform duration-200 ${checked ? 'scale-100' : 'scale-75'}`}
+                  style={{ backgroundColor: series.color }}
+                />
                 {series.label}
               </span>
             </label>

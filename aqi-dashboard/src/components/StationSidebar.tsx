@@ -7,6 +7,7 @@ import { useLiveAqi } from '../hooks/useLiveAqi'
 import { useStationHistory } from '../hooks/useStationHistory'
 import { getAqiCategory, getHistoricalRangeAqi } from '../utils/aqi'
 import { LiveStationCard } from './LiveStationCard'
+import { AnimatedNumber } from './AnimatedNumber'
 
 type StationGeo = {
   station_id: string
@@ -23,11 +24,11 @@ function formatDate(value: string) {
 }
 
 function SkeletonLine({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded-full bg-slate-200/80 ${className}`} />
+  return <div className={`skeleton rounded-full ${className}`} />
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{children}</p>
+  return <p className="eyebrow">{children}</p>
 }
 
 /** AQI for one station in the current mode: live reading, or the date-range average. */
@@ -62,11 +63,12 @@ function AqiChip({ value, loading }: { value: number | null; loading: boolean })
   const category = getAqiCategory(value)
   return (
     <span
-      className="inline-flex min-w-[2.75rem] justify-center rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums text-white"
-      style={{ backgroundColor: category.color }}
+      className="inline-flex min-w-[3.25rem] items-center justify-end gap-1.5 rounded-full px-2 py-0.5 text-xs font-semibold transition-colors duration-500"
+      style={{ backgroundColor: `${category.color}1f`, color: category.color }}
       title={category.label}
     >
-      {value}
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full transition-colors duration-500" style={{ backgroundColor: category.color }} />
+      <AnimatedNumber value={value} />
     </span>
   )
 }
@@ -87,11 +89,11 @@ function StationListItem({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`flex w-full items-center justify-between gap-3 rounded-xl px-2.5 py-2 text-left transition ${
-        selected ? 'bg-sky-50 ring-1 ring-sky-300' : 'hover:bg-slate-50'
+      className={`flex w-full items-center justify-between gap-3 rounded-xl px-2.5 py-2 text-left transition-colors duration-200 ${
+        selected ? 'bg-slate-100' : 'hover:bg-slate-50'
       }`}
     >
-      <span className={`min-w-0 truncate text-sm ${selected ? 'font-semibold text-sky-900' : 'font-medium text-slate-800'}`}>
+      <span className={`min-w-0 truncate text-sm ${selected ? 'font-semibold text-slate-950' : 'text-slate-700'}`}>
         {station.station_name}
       </span>
       <AqiChip value={aqi.value} loading={aqi.loading} />
@@ -133,14 +135,14 @@ function HistoricalStationCard({ stationId }: { stationId: string }) {
   return (
     <div>
       <SectionTitle>Average AQI</SectionTitle>
-      <div className="mt-1 flex items-center gap-3">
-        <p className="text-4xl font-semibold tracking-tight text-slate-950 tabular-nums">{range.value}</p>
-        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ${range.category.className}`}>
+      <div className="mt-1 flex items-end gap-3">
+        <AnimatedNumber value={range.value} className="text-5xl font-semibold leading-none tracking-tight text-slate-950" />
+        <span className="mb-1 text-sm font-medium" style={{ color: range.category.color }}>
           {range.category.label}
         </span>
       </div>
-      <p className="mt-2 text-xs leading-5 text-slate-500">
-        {rangeLabel} · {range.readingCount.toLocaleString('en-IN')} readings. See the chart for the full trend.
+      <p className="mt-3 text-xs leading-5 text-slate-500">
+        {rangeLabel} · {range.readingCount.toLocaleString('en-IN')} readings
       </p>
     </div>
   )
@@ -220,7 +222,7 @@ export function StationSidebar() {
   )
 
   return (
-    <aside className="min-w-0 space-y-4 rounded-3xl border border-slate-200 bg-white/90 p-3.5 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-5">
+    <aside className="card space-y-5">
       <section>
         <div className="flex items-baseline justify-between gap-2">
           <h2 className="text-base font-semibold text-slate-900">Stations</h2>
@@ -240,13 +242,12 @@ export function StationSidebar() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3">
+      <section className="rounded-xl bg-slate-50 p-3.5">
         {!selectedStation ? (
-          <p className="text-sm leading-6 text-slate-600">
-            Select a station from the list, the map, or the picker at the top to see its details.
-          </p>
+          <p className="text-sm leading-6 text-slate-500">Select a station to see its details.</p>
         ) : (
-          <>
+          // Keyed by station so the details fade in again on every switch.
+          <div key={`${selectedStation.station_id}-${mode}`} className="animate-fade-up">
             <div className="mb-3 flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <h3 className="break-words text-lg font-semibold leading-6 text-slate-900">{selectedStation.station_name}</h3>
@@ -276,11 +277,11 @@ export function StationSidebar() {
             ) : (
               <LiveStationCard liveData={liveData} stale={liveStale} />
             )}
-          </>
+          </div>
         )}
       </section>
 
-      <section className="space-y-3 border-t border-slate-200 pt-4">
+      <section className="space-y-3 border-t border-slate-100 pt-5">
         <h2 className="text-base font-semibold text-slate-900">Map layers</h2>
 
         <div>

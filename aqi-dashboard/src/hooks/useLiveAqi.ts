@@ -469,6 +469,37 @@ async function fetchWaqiStationFeed(
   } satisfies LiveAqiResult;
 }
 
+/**
+ * Fills pollutants the live source didn't report with the station's latest
+ * historical value (marked "last known"). The history file is only fetched
+ * when something is actually missing; CPCB normally reports all seven.
+ */
+async function fillMissingPollutants(stationId: string, result: LiveAqiResult) {
+  const pollutants = result.payload.pollutants;
+  const missing = (Object.keys(pollutants) as Array<keyof typeof pollutants>).filter(
+    (key) => pollutants[key].value === null,
+  );
+  if (missing.length === 0) {
+    return result;
+  }
+
+  let fallback: Partial<WaqiNormalizedPollutants>;
+  try {
+    fallback = await loadHistoricalFallbackPollutants(stationId);
+  } catch {
+    return result;
+  }
+
+  const filled = { ...pollutants };
+  for (const key of missing) {
+    const value = fallback[key];
+    if (value !== undefined && value !== null) {
+      filled[key] = { value, source: "last known" };
+    }
+  }
+  return { ...result, payload: { ...result.payload, pollutants: filled } };
+}
+
 async function loadLiveAqi(stationId: string, forceRefresh = false) {
   const inFlight = waqiLiveRequestCache.get(stationId);
   if (inFlight && !forceRefresh) {
@@ -476,10 +507,10 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
   }
 
   const request = (async () => {
-    const [station, fallbackPollutants] = await Promise.all([
-      resolveStationGeo(stationId),
-      loadHistoricalFallbackPollutants(stationId),
-    ]);
+    const station = await resolveStationGeo(stationId);
+    // Gaps are filled from history afterwards (fillMissingPollutants), and only when
+    // a live reading actually lacks a pollutant. Each history file is ~8 MB.
+    const fallbackPollutants: Partial<WaqiNormalizedPollutants> = {};
 
     if (!station) {
       throw new Error(
@@ -498,9 +529,10 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
     }
 
     if (cpcbResult && !cpcbResult.stale) {
-      waqiLiveCache.set(stationId, cpcbResult);
-      void writeLiveCacheToIndexedDb(stationId, cpcbResult);
-      return cpcbResult;
+      const complete = await fillMissingPollutants(stationId, cpcbResult);
+      waqiLiveCache.set(stationId, complete);
+      void writeLiveCacheToIndexedDb(stationId, complete);
+      return complete;
     }
 
     const uid = resolveWaqiUid(station);
@@ -548,8 +580,9 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
     }
 
     if (result) {
+      const completed = await fillMissingPollutants(stationId, result);
       const normalizedResult = {
-        ...result,
+        ...completed,
         stale: isWaqiTimestampStale(result.payload.updatedAt, FRESHNESS_WINDOW_MS),
       };
 

@@ -18,49 +18,38 @@ const valueFormatter = new Intl.NumberFormat('en-IN', {
   maximumFractionDigits: 1,
 })
 
+/** Compact two-column list: pollutant, a thin bar scaled to 0–500, and the value. */
 export function LivePollutantGrid({ pollutants }: Props) {
   const keys = Object.keys(POLLUTANT_LABELS) as WaqiPollutantKey[]
   const hasLastKnown = keys.some((key) => pollutants[key].source === 'last known')
 
   return (
     <div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))] gap-1.5">
+      <ul className="grid grid-cols-1 gap-x-5 gap-y-2 sm:grid-cols-2 xl:grid-cols-1">
         {keys.map((key) => {
           const pollutant = pollutants[key]
-          const hasValue = typeof pollutant.value === 'number' && Number.isFinite(pollutant.value)
+          const value = typeof pollutant.value === 'number' && Number.isFinite(pollutant.value) ? pollutant.value : null
           const isLive = pollutant.source === 'live'
 
           return (
-            <div
-              key={key}
-              className={`rounded-xl border px-2.5 py-2 ${
-                isLive ? 'border-emerald-200 bg-white' : 'border-dashed border-slate-200 bg-slate-50'
-              }`}
-            >
-              <p className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+            <li key={key} className="grid grid-cols-[3.25rem_1fr_2.75rem] items-center gap-2 text-xs">
+              <span className="font-medium text-slate-600">{POLLUTANT_LABELS[key]}</span>
+              <span className="h-1 overflow-hidden rounded-full bg-slate-200/70" aria-hidden="true">
                 <span
-                  aria-hidden="true"
-                  className={`h-1.5 w-1.5 shrink-0 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                  className={`block h-full rounded-full transition-[width] duration-700 ease-out ${isLive ? 'bg-slate-500' : 'bg-slate-300'}`}
+                  style={{ width: `${value === null ? 0 : Math.min(100, (value / 500) * 100)}%` }}
                 />
-                {POLLUTANT_LABELS[key]}
-              </p>
-              <p className={`mt-0.5 text-base font-semibold tabular-nums ${isLive ? 'text-slate-900' : 'text-slate-500'}`}>
-                {hasValue && pollutant.value !== null ? valueFormatter.format(pollutant.value) : '—'}
-              </p>
-              <span className="sr-only">{isLive ? 'live value' : 'last known value'}</span>
-            </div>
+              </span>
+              <span className={`text-right tabular-nums ${isLive ? 'font-semibold text-slate-900' : 'text-slate-400'}`}>
+                {value === null ? '—' : valueFormatter.format(value)}
+                {!isLive && value !== null ? <span className="sr-only"> (last known)</span> : null}
+              </span>
+            </li>
           )
         })}
-      </div>
+      </ul>
       {hasLastKnown ? (
-        <p className="mt-2 flex items-center gap-3 text-[11px] text-slate-500">
-          <span className="flex items-center gap-1">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Live
-          </span>
-          <span className="flex items-center gap-1">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-slate-300" /> Last known (live value unavailable)
-          </span>
-        </p>
+        <p className="mt-2 text-[11px] text-slate-400">Grey values are last known; the live source didn't report them.</p>
       ) : null}
     </div>
   )

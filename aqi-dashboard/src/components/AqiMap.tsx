@@ -309,12 +309,27 @@ const stationMarkerIcon = new Icon({
   shadowSize: [41, 41],
 })
 
+/** False until `flag` is first true, then true for good (used to defer heavy layers). */
+function useStaysTrue(flag: boolean) {
+  const [latched, setLatched] = useState(flag)
+  useEffect(() => {
+    if (flag) {
+      setLatched(true)
+    }
+  }, [flag])
+  return latched || flag
+}
+
 export function AqiMap() {
   const [stations, setStations] = useState<StationGeo[]>([])
   const [showVoronoi, setShowVoronoi] = useState(true)
   const [showRoadNetwork, setShowRoadNetwork] = useState(false)
   const { mode, coverageMode, showCircle3km, showBridgePolygons, selectedTrioStations } = useStationContext()
   const { data: roadNetwork, status: roadNetworkStatus } = useRoadNetworkPayload(null, showRoadNetwork)
+  const roadLayerRequested = useStaysTrue(showRoadNetwork)
+  const circleLayerRequested = useStaysTrue(showCircle3km)
+  const bridgeLayerRequested = useStaysTrue(showBridgePolygons)
+  const trioLayersRequested = useStaysTrue(selectedTrioStations.size > 0)
   const markerRefs = useRef<Map<string, StationMarkerRef | null>>(new Map())
   const stationColorMapRecomputeCount = useRef(0)
   const [coverageSummaries, setCoverageSummaries] = useState<Record<string, CoverageStationSummary>>({})
@@ -399,44 +414,35 @@ export function AqiMap() {
   )
 
   return (
-    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-6">
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-slate-900">Station map</h2>
-          <p className="mt-0.5 text-xs text-slate-500">Tap a marker for its reading. Shaded zones show each station's nearest-coverage area.</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
+    <section className="card">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-base font-semibold text-slate-900">Map</h2>
+        <div className="flex flex-wrap items-center justify-end gap-1">
           <button
             type="button"
             onClick={() => setShowVoronoi((current) => !current)}
-            disabled={false}
-            className="inline-flex max-w-full items-center rounded-full border border-sky-200 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 disabled:hover:bg-transparent"
+            aria-pressed={showVoronoi}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-200 ${showVoronoi ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
           >
-            {showVoronoi ? 'Hide zones' : 'Show zones'}
+            Zones
           </button>
           <button
             type="button"
             onClick={() => setShowRoadNetwork((current) => !current)}
             disabled={roadNetworkStatus === 'loading'}
-            className="inline-flex max-w-full items-center rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 disabled:hover:bg-transparent"
+            aria-pressed={showRoadNetwork}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors duration-200 disabled:cursor-wait disabled:opacity-60 ${showRoadNetwork && roadNetwork ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
           >
             {roadNetworkStatus === 'loading' && showRoadNetwork
-              ? 'Loading Roads'
+              ? 'Loading roads…'
               : roadNetworkStatus === 'error'
                 ? 'Roads unavailable'
-                : roadNetwork
-                  ? showRoadNetwork
-                    ? 'Hide Roads'
-                    : 'Show Roads'
-                  : 'Show Roads'}
+                : 'Roads'}
           </button>
-          <span className="inline-flex max-w-full self-start rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:self-auto">
-            OpenStreetMap
-          </span>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200">
+      <div className="overflow-hidden rounded-xl">
         <LeafletMapContainer
           center={kolkataCenter}
           zoom={11}
@@ -461,34 +467,47 @@ export function AqiMap() {
               />
             ) : null}
           </Suspense>
+          {/*
+            Optional layers mount the first time they are switched on (and then stay
+            mounted, so toggling is instant). The road layers pull in the full road
+            network (~16 MB raw), so they must not load while hidden.
+          */}
           <Suspense fallback={<LayerLoadingFallback label="Roads" />}>
-            {coverageMode === 'voronoi' ? (
+            {coverageMode === 'voronoi' && roadLayerRequested ? (
               <LazyRoadLayer visible={showRoadNetwork} stationColorMap={stationColorMap} stationSummaries={coverageSummaries} />
             ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="3km circles" />}>
-            <LazyCircle3kmLayer visible={showCircle3km} stationColorMap={stationColorMap} pane="circle3km-pane" />
+            {circleLayerRequested ? (
+              <LazyCircle3kmLayer visible={showCircle3km} stationColorMap={stationColorMap} pane="circle3km-pane" />
+            ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="Bridge polygons" />}>
-            <LazyBridgeLayer visible={showBridgePolygons} stationColorMap={stationColorMap} pane="bridge-pane" />
+            {bridgeLayerRequested ? (
+              <LazyBridgeLayer visible={showBridgePolygons} stationColorMap={stationColorMap} pane="bridge-pane" />
+            ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="3-station roads" />}>
-            <LazyClosestTrioRoadLayer
-              visible={selectedTrioStations.size > 0}
-              selectedStationIds={selectedTrioStations}
-              stationColorMap={stationColorMap}
-              stationSummaries={coverageSummaries}
-              pane="bridge-trio-road-pane"
-            />
+            {trioLayersRequested ? (
+              <LazyClosestTrioRoadLayer
+                visible={selectedTrioStations.size > 0}
+                selectedStationIds={selectedTrioStations}
+                stationColorMap={stationColorMap}
+                stationSummaries={coverageSummaries}
+                pane="bridge-trio-road-pane"
+              />
+            ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="3-station bridges" />}>
-            <LazyClosestTrioBridgeLayer
-              visible={selectedTrioStations.size > 0}
-              selectedStationIds={selectedTrioStations}
-              stationColorMap={stationColorMap}
-              stationSummaries={coverageSummaries}
-              pane="bridge-trio-pane"
-            />
+            {trioLayersRequested ? (
+              <LazyClosestTrioBridgeLayer
+                visible={selectedTrioStations.size > 0}
+                selectedStationIds={selectedTrioStations}
+                stationColorMap={stationColorMap}
+                stationSummaries={coverageSummaries}
+                pane="bridge-trio-pane"
+              />
+            ) : null}
           </Suspense>
           {stationOverlays}
         </LeafletMapContainer>

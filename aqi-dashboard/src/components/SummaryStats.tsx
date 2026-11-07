@@ -1,5 +1,6 @@
 ﻿import { useMemo } from 'react'
 import { calculateRecordAqi, type PollutantRecord } from '../utils/aqi'
+import { AnimatedNumber } from './AnimatedNumber'
 
 type Props = {
   records: PollutantRecord[]
@@ -35,20 +36,15 @@ export function SummaryStats({ records }: Props) {
   }, [records])
 
   return (
-    <div className="grid gap-2 sm:grid-cols-3">
+    <dl className="flex flex-wrap gap-x-8 gap-y-2">
       {stats.map((stat) => (
-        <div key={stat.label} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 sm:px-3.5 sm:py-3">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-              {stat.label}
-            </p>
-            <span className={`text-sm font-semibold leading-none ${stat.accentClass}`}>
-              {stat.value ?? '—'}
-            </span>
-          </div>
-          <p className="mt-1 text-[10px] leading-4 text-slate-500">Filtered range</p>
+        <div key={stat.label}>
+          <dt className="text-xs text-slate-500">{stat.label} AQI</dt>
+          <dd className="mt-0.5 text-xl font-semibold text-slate-900">
+            {stat.value === null ? '—' : <AnimatedNumber value={stat.value} />}
+          </dd>
         </div>
       ))}
-    </div>
+    </dl>
   )
 }

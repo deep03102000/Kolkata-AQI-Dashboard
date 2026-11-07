@@ -109,12 +109,11 @@ async function fetchFromDataGovIn(apiKey) {
   }
 }
 
-function cacheTtlMs(body) {
+function isNextReadingDue(body) {
   const newest = body.stations
     .map((station) => (station.lastUpdate ? new Date(station.lastUpdate).getTime() : 0))
     .reduce((max, value) => Math.max(max, value), 0)
-  const nextReadingDue = newest > 0 && Date.now() >= newest + NEXT_READING_DUE_AFTER_MS
-  return nextReadingDue ? CACHE_TTL_WHEN_DUE_MS : CACHE_TTL_MS
+  return newest === 0 || Date.now() >= newest + NEXT_READING_DUE_AFTER_MS
 }
 
 function isCacheUsable(fresh) {
@@ -122,7 +121,14 @@ function isCacheUsable(fresh) {
     return false
   }
   const age = Date.now() - cache.at
-  return fresh ? age < MIN_FRESH_INTERVAL_MS : age < cacheTtlMs(cache.body)
+  const due = isNextReadingDue(cache.body)
+
+  if (fresh) {
+    // A reload wants the newest data. If the next hourly reading can't exist yet,
+    // the cached copy already is the newest, so answer instantly (data.gov.in takes 2-3 s).
+    return !due ? age < CACHE_TTL_MS : age < MIN_FRESH_INTERVAL_MS
+  }
+  return age < (due ? CACHE_TTL_WHEN_DUE_MS : CACHE_TTL_MS)
 }
 
 /** True when the request asks to skip the cache (the browser sends ?fresh=1 on page load). */

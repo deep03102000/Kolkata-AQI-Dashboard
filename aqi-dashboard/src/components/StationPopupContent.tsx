@@ -25,17 +25,9 @@ type StationSummaryCardProps = {
 }
 
 function SkeletonBlock({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded-xl bg-slate-200/80 ${className}`} />
+  return <div className={`skeleton rounded-lg ${className}`} />
 }
 
-function AlertBanner({ tone, children }: { tone: 'error' | 'loading'; children: React.ReactNode }) {
-  const styles =
-    tone === 'error'
-      ? 'border-rose-200 bg-rose-50 text-rose-700'
-      : 'border-sky-200 bg-sky-50 text-sky-700'
-
-  return <div className={`rounded-lg border px-2 py-1 text-[11px] leading-4 ${styles}`}>{children}</div>
-}
 
 export function StationSummaryCard({ station, summary, sourceLabel }: StationSummaryCardProps) {
   return (
@@ -84,78 +76,59 @@ export function StationPopupContent({
   const isHistorical = historicalSummary !== undefined
 
   const header = (
-    <div className="flex items-center justify-between gap-2">
-      <p className="break-words text-sm font-semibold leading-5 text-slate-900">{station.station_name}</p>
-      {isSelected ? (
-        <span className="shrink-0 rounded-full bg-sky-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-700">
-          Selected
+    <p className={`text-sm leading-5 text-slate-900 ${isSelected ? 'font-semibold' : 'font-medium'}`}>{station.station_name}</p>
+  )
+
+  // Big number + category in its colour + one quiet line of context.
+  const reading = (value: number, color: string, label: string, note: React.ReactNode) => (
+    <div>
+      <div className="flex items-baseline gap-2">
+        <span className="text-3xl font-semibold leading-none tracking-tight text-slate-950 tabular-nums">{value}</span>
+        <span className="text-xs font-medium" style={{ color }}>
+          {label}
         </span>
-      ) : null}
+      </div>
+      <p className="mt-1.5 text-[11px] leading-4 text-slate-500">{note}</p>
     </div>
   )
 
   if (isHistorical) {
     return (
-      <div className="min-w-0 max-w-[210px] space-y-2 sm:max-w-[230px]">
+      <div className="min-w-0 max-w-[210px] space-y-1.5 sm:max-w-[230px]">
         {header}
         {historicalSummary ? (
-          <div className="space-y-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Average AQI</span>
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${historicalSummary.category.className}`}>
-                {historicalSummary.category.label}
-              </span>
-            </div>
-            <p className="text-2xl font-semibold tracking-tight text-slate-950 tabular-nums">{historicalSummary.value}</p>
-            <p className="text-[11px] leading-4 text-slate-500">{historicalSummary.detailLabel}</p>
-          </div>
+          reading(
+            historicalSummary.value,
+            historicalSummary.category.color,
+            historicalSummary.category.label,
+            <>Average · {historicalSummary.detailLabel}</>,
+          )
         ) : (
-          <SkeletonBlock className="h-16 w-full" />
+          <SkeletonBlock className="h-10 w-full" />
         )}
       </div>
     )
   }
 
   return (
-    <div className="min-w-0 max-w-[210px] space-y-2 sm:max-w-[230px]">
+    <div className="min-w-0 max-w-[210px] space-y-1.5 sm:max-w-[230px]">
       {header}
 
-      {liveLoading ? <AlertBanner tone="loading">Loading live AQI...</AlertBanner> : null}
-      {liveError ? <AlertBanner tone="error">Live AQI unavailable.</AlertBanner> : null}
-
       {liveLoading ? (
-        <div className="space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
-          <SkeletonBlock className="h-3 w-16" />
-          <div className="flex items-end justify-between gap-2">
-            <SkeletonBlock className="h-7 w-12 rounded-md" />
-            <SkeletonBlock className="h-5 w-12 rounded-full" />
-          </div>
-        </div>
+        <SkeletonBlock className="h-10 w-full" />
+      ) : liveError && !summary ? (
+        <p className="text-xs text-rose-600">Live AQI unavailable.</p>
       ) : summary ? (
-        <div className="space-y-1.5 rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-              {summary.sourceLabel}
-            </span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] ring-1 ${summary.category.className}`}
-            >
-              {summary.category.label}
-            </span>
-          </div>
-          <p className="text-2xl font-semibold tracking-tight text-slate-950 tabular-nums">{summary.value}</p>
-          {liveUpdatedAt ? (
-            <p className="text-[11px] leading-4 text-slate-500">
-              Updated {formatWaqiTimestamp(liveUpdatedAt)}
-              {liveStale ? <span className="ml-1 font-semibold text-amber-700">· Stale</span> : null}
-            </p>
-          ) : null}
-          {liveData?.nearbySensor ? (
-            <p className="text-[11px] leading-4 text-amber-700">
-              Via {liveData.nearbySensor.name} ({liveData.nearbySensor.distanceKm.toFixed(1)} km)
-            </p>
-          ) : null}
-        </div>
+        reading(
+          summary.value,
+          summary.category.color,
+          summary.category.label,
+          <>
+            {liveData?.cpcbStation ? 'CPCB' : liveData?.nearbySensor ? `Via ${liveData.nearbySensor.name} (${liveData.nearbySensor.distanceKm.toFixed(1)} km)` : 'WAQI'}
+            {liveUpdatedAt ? <> · {formatWaqiTimestamp(liveUpdatedAt)}</> : null}
+            {liveStale ? <span className="font-medium text-amber-700"> · stale</span> : null}
+          </>,
+        )
       ) : null}
     </div>
   )
