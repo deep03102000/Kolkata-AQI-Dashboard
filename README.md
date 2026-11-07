@@ -70,8 +70,11 @@ The repository is ready for either **Render** or **Netlify**. Both serve the bui
 |---|---|---|
 | Config file | `render.yaml` (Blueprint) | `netlify.toml` (repo root) |
 | Live AQI route | `server.mjs` | `netlify/functions/cpcb.mjs` |
-| WAQI proxy URL | `VITE_WAQI_PROXY_URL=/api/waqi` (already in `render.yaml`) | `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi` |
-| Free tier | Free instances sleep when idle (slow first load); `render.yaml` uses the paid **starter** plan | Free tier fits this project (static site + 2 functions) |
+| WAQI proxy URL | `/api/waqi` (set in `render.yaml`) | `/.netlify/functions/waqi` (set in `netlify.toml`) |
+| Free tier | Free instances sleep when idle (30–60 s first load); `render.yaml` uses the paid **starter** plan | Free tier fits this project; nothing sleeps |
+| Speed in India | One server region | Global CDN with edge servers in India; long-lived caching of build files and data |
+
+**Recommended: Netlify**, for the lowest load time.
 
 ### Render
 1. Push the code to GitHub and merge it into `main`.
@@ -88,7 +91,8 @@ To use Render's free plan, change `plan: starter` to `plan: free` in `render.yam
 2. Under **Site configuration → Environment variables**, set:
    - `DATA_GOV_IN_API_KEY`: your data.gov.in key
    - `WAQI_API_TOKEN`: your WAQI token
-   - `VITE_WAQI_PROXY_URL` = `/.netlify/functions/waqi`
+
+   Node 22 and the WAQI proxy path are already set in `netlify.toml`.
 3. Deploy, then open `https://<your-site>.netlify.app/api/cpcb` to check live data.
 
 Or deploy from your computer with the Netlify CLI: run `netlify login`, then `netlify init` (or `netlify link`) and `netlify deploy --build --prod` from the repository root.

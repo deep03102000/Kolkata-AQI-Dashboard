@@ -14,7 +14,8 @@ This repository is ready to deploy from the repo root through **Render** (`rende
 
 - Base directory `aqi-dashboard`, build command `npm run build`, publish directory `dist`, functions `netlify/functions` (all set in `netlify.toml`)
 - `/api/cpcb` is redirected to the `cpcb` function
-- Set `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi`; on Netlify the WAQI proxy is the `waqi` function
+- `netlify.toml` also sets Node 22, `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi` and cache headers (build files for a year, `/data/*` for a day)
+- Only the secrets need setting in Netlify: `DATA_GOV_IN_API_KEY` and `WAQI_API_TOKEN`
 
 ## Required Environment Variables
 
