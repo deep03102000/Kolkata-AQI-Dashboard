@@ -1,0 +1,8 @@
+# Vercel only hosts the Mumbai CPCB function (api/cpcb.mjs); the site itself is on Netlify.
+# Upload just the function and the shared module it imports.
+/*
+!/api
+!/vercel.json
+!/aqi-dashboard
+/aqi-dashboard/*
+!/aqi-dashboard/shared

@@ -78,3 +78,15 @@ CPCB's data.gov.in feed has no weather fields, and the stations' own temperature
 - **Freshness:** Open-Meteo updates every 15 minutes; the dashboard refreshes every 10.
 - **Where it shows:** the live station card (temperature, feels-like, humidity), each comparison-table row and the map popups. Live mode only.
 - **Code:** `aqi-dashboard/src/utils/weather.ts` and `aqi-dashboard/src/hooks/useStationWeather.ts`.
+
+## Hosting note: CPCB needs a server in India
+
+data.gov.in refuses connections from servers outside India: Netlify's functions (US) get `ECONNREFUSED 164.100.61.198:443`, and Netlify Edge Functions were refused too. The deployed site therefore forwards `/api/cpcb` (see `netlify.toml`) to the same code running on **Vercel in Mumbai (`bom1`)**:
+
+- `api/cpcb.mjs`: the Vercel function, which reuses `aqi-dashboard/shared/cpcbFeed.mjs`
+- `vercel.json`: pins the region to `bom1`
+- `.vercelignore`: uploads only the function and the shared module
+- The Vercel project is `kolkata-aqi-cpcb`, at https://kolkata-aqi-cpcb.vercel.app/api/cpcb, and it needs `DATA_GOV_IN_API_KEY` set in Vercel.
+- Redeploy it with `vercel deploy --prod` from the repository root.
+
+Running locally needs none of this: your computer is in India, so the Vite dev server reaches data.gov.in directly.

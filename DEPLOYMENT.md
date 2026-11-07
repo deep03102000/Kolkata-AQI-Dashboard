@@ -35,3 +35,14 @@ Set secrets in the Render dashboard (Environment). `render.yaml` lists them with
 - Live data sources are described in [docs/live-data-sources.md](docs/live-data-sources.md).
 - The root-level dataset and docs stay in the repository, but they are not deployed as site content.
 - The app has already been verified with `npm run build`.
+
+## CPCB Proxy in Mumbai (required for official live AQI)
+
+data.gov.in refuses servers outside India, so the hosted site's `/api/cpcb` is forwarded (`netlify.toml`) to a small Vercel function pinned to Mumbai:
+
+1. From the repository root: `vercel link --project kolkata-aqi-cpcb`.
+2. Add the key: `vercel env add DATA_GOV_IN_API_KEY production`.
+3. Deploy: `vercel deploy --prod`. `vercel.json` sets the region to `bom1`, and `.vercelignore` uploads only `api/` and `aqi-dashboard/shared/`.
+4. Check: https://kolkata-aqi-cpcb.vercel.app/api/cpcb should list the Kolkata stations.
+
+If you change the key, update it in `.env.local`, in Netlify and in Vercel.

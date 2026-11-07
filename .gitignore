@@ -10,3 +10,5 @@ aqi-dashboard/public/data/waqi_last_updated_stations.json
 
 # Local Netlify folder
 .netlify
+
+.vercel

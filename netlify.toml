@@ -21,7 +21,12 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
+# data.gov.in refuses servers outside India (Netlify functions run in the US),
+# so /api/cpcb is proxied to the same code running in Vercel's Mumbai region
+# (api/cpcb.mjs + vercel.json). Fallback if that host is removed:
+#   to = "/.netlify/functions/cpcb"
 [[redirects]]
   from = "/api/cpcb"
-  to = "/.netlify/functions/cpcb"
+  to = "https://kolkata-aqi-cpcb.vercel.app/api/cpcb"
   status = 200
+  force = true
