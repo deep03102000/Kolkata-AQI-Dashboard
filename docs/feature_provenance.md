@@ -1,4 +1,4 @@
-﻿# Feature Provenance
+# Feature Provenance
 
 This file maps the current dashboard features back to the work that introduced them.
 
@@ -57,3 +57,10 @@ This file maps the current dashboard features back to the work that introduced t
 - Coverage, roads, and popups now receive a shared stale flag.
 - Cached live data is visually distinct from fresh live data.
 - The sidebar and comparison table surface the same cached-live state.
+
+## Phase 12
+- A dedicated three-station bridge overlay was added for Jadavpur, Rabindra Sarobar, and Ballygunge.
+- A trio-only road layer was added so roads inside the ticked trio region can be colored independently of the general road overlay.
+- A trio station selector was added in the sidebar with independent checkbox state and live AQI color swatches.
+- Trio bridge and trio road layers were kept separate from the existing general bridge and road features.
+

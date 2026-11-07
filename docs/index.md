@@ -1,7 +1,8 @@
-﻿# Docs Index
+# Docs Index
 
 ## Project Guides
 - [Architecture](./architecture.md)
+- [Live Data Sources](./live-data-sources.md)
 - [Phase Implementation Summary](./phase-implementation-summary.md)
 - [Project Scope](./project_scope.md)
 - [Project Documentation](./project_documentation.md)
@@ -33,6 +34,10 @@
 - [Phase 9.6 Sanity-Check File Size](./phase-9-6-size-budget.md)
 - [Phase 10.1 Build CoverageLayer](./phase-10-1-coverage-layer.md)
 - [Phase 11.1 Live Reactivity and Stale Visuals](./phase-11-1-live-reactivity-and-stale-visuals.md)
+- [Phase 12.1 Pairwise Bridge Polygons](./phase-12-1-pairwise-bridge-polygons.md)
+- [Phase 12.9 Dedicated Three-Station Bridge Overlay](./phase-12-9-dedicated-three-station-bridge-overlay.md)
+- [Phase 12.10 Trio Road Coloring](./phase-12-10-trio-road-coloring.md)
+- [Phase 12.11 Trio Selector Interaction Notes](./phase-12-11-trio-selector-interaction.md)
 
 ## Configuration
 - [Config Examples](./config_examples.md)
@@ -40,5 +45,9 @@
 
 ## Notes
 
-- The documentation is organized by implementation phase, with spatial tooling notes in Phases 8 through 11.
-- The current app supports static history, live WAQI fallback caching, Voronoi coverage, road overlays, and stale-data visual cues when live readings are reused.
+- The documentation is organized by implementation phase, with spatial tooling notes in Phases 8 through 12.
+- The current app supports static history, live AQI from CPCB's official station feed with WAQI and nearest-sensor fallbacks ([Live Data Sources](./live-data-sources.md)), Voronoi coverage, road overlays, and stale-data visual cues when live readings are reused.
+
+
+
+

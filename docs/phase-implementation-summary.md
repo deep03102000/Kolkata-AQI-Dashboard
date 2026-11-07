@@ -1,4 +1,4 @@
-﻿# Phase Implementation Summary
+# Phase Implementation Summary
 
 This file gives a single, high-level view of how the project evolved from raw AQI files to the current dashboard with optional live WAQI support.
 
@@ -132,6 +132,31 @@ Outcome:
 
 - Live AQI remains visible during transient fetch gaps, but the UI now makes stale fallback data easy to distinguish from a fresh live reading.
 
+## Phase 12: Pairwise Bridge Polygons
+
+Key implementation:
+
+- Locked the geometry gate so only station pairs with inter-station distance at or below 6 km qualify for bridge-polygon construction.
+- Treated that same rule as the midpoint equivalent of being within 3 km of each station.
+
+Outcome:
+
+- The bridge-polygon phase now has a single, explicit pair-selection rule before any geometry is built.
+
+
+## Phase 12: Trio Overlays and Selector Controls
+
+Key implementation:
+
+- Added a trio-specific bridge overlay that stays separate from the general six-station bridge feature.
+- Added a trio-specific road overlay that colors roads for whichever trio stations are selected.
+- Added a sidebar trio selector with independent checkboxes and live AQI color swatches.
+- Kept the trio selection state independent from the existing coverage toggle state.
+- Reused the shared station-color map and stale-data semantics so Live and Historical views stay in sync.
+
+Outcome:
+
+- The dashboard now supports a dedicated three-station overlay workflow without disturbing the original coverage, road, or general bridge features.
 ## Current State
 
 The project now combines:
@@ -143,5 +168,11 @@ The project now combines:
 - coverage and road overlays built from phase outputs
 - explicit stale-data visuals when live values fall back to cached readings
 - a build-time `scripts/` area for geometry and coverage tooling
+- a locked pairwise-bridge geometry rule for any future Phase 12 work
+- a separate additive three-station bridge overlay path, plus trio road and selector controls that stay independent from the main coverage toggle
 
 This keeps the app lightweight, maintainable, and easy to run. The current spatial tooling also keeps the station master table and distance analysis in sync.
+
+
+
+

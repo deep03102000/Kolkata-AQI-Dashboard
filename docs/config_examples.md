@@ -18,7 +18,16 @@ The historical chart loads station data like this:
 fetch(`/data/station_${stationId}.json`)
 ```
 
-## WAQI live-data config
+## CPCB live-data config (primary source)
+Official station readings come from data.gov.in. The key is read on the server only, so never give it a `VITE_` prefix:
+
+```bash
+DATA_GOV_IN_API_KEY=your_data_gov_in_key
+```
+
+Put it in `aqi-dashboard/.env.local` for local development, and in the Render or Netlify environment for deployment. See [Live Data Sources](./live-data-sources.md).
+
+## WAQI live-data config (fallback)
 Use a server-side proxy in deployment and a token only for local fallback:
 
 ```bash

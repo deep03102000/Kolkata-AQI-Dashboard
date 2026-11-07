@@ -1,16 +1,17 @@
-﻿# Project Scope
+# Project Scope
 
 ## In Scope
 - Cleaning and standardizing six station datasets
 - Exporting static JSON for on-demand loading
 - Rendering a Kolkata AQI dashboard in React
-- Showing AQI summaries, circles, coverage overlays, road overlays, and history charts
+- Showing AQI summaries, circles, coverage overlays, road overlays, dedicated trio bridge/road overlays, and history charts
 - Supporting Live and Historical modes
 - Filtering historical records by date range
 - Comparing all six stations in a table
 - Resolving optional live WAQI data by station UID
 - Marking cached live fallbacks as stale when fresh data is unavailable
 - Using a server-side proxy for WAQI tokens in deployment
+- Keeping the trio selector independent from the main coverage toggle so users can explore the dedicated three-station overlay without changing the rest of the map state
 
 ## Out of Scope
 - Real-time sensor streaming directly from the station hardware
