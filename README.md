@@ -62,6 +62,42 @@ See [docs/live-data-sources.md](docs/live-data-sources.md) for the full source o
 - Local development can call WAQI directly with `VITE_WAQI_API_TOKEN` if the proxy is not configured.
 - Station-to-WAQI UID mappings live in `aqi-dashboard/src/data/waqiStationUids.ts`.
 
+## Deploy
+
+The repository is ready for either **Render** or **Netlify**. Both serve the built site and the `/api/cpcb` route, and both keep API keys on the server.
+
+| | Render | Netlify |
+|---|---|---|
+| Config file | `render.yaml` (Blueprint) | `netlify.toml` (repo root) |
+| Live AQI route | `server.mjs` | `netlify/functions/cpcb.mjs` |
+| WAQI proxy URL | `VITE_WAQI_PROXY_URL=/api/waqi` (already in `render.yaml`) | `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi` |
+| Free tier | Free instances sleep when idle (slow first load); `render.yaml` uses the paid **starter** plan | Free tier fits this project (static site + 2 functions) |
+
+### Render
+1. Push the code to GitHub and merge it into `main`.
+2. In Render: **New → Blueprint**, then pick this repository. Render reads `render.yaml`. If it is already connected, it redeploys on every push to `main`.
+3. Under the service's **Environment**, set:
+   - `DATA_GOV_IN_API_KEY`: your data.gov.in key (official CPCB live AQI)
+   - `WAQI_API_TOKEN`: your WAQI token (fallback)
+4. Deploy, then open `https://<your-service>.onrender.com/api/cpcb`. It should list the Kolkata stations.
+
+To use Render's free plan, change `plan: starter` to `plan: free` in `render.yaml` before creating the Blueprint.
+
+### Netlify
+1. In Netlify: **Add new site → Import an existing project**, then pick this repository. `netlify.toml` sets the base directory (`aqi-dashboard`), build command, publish folder and functions.
+2. Under **Site configuration → Environment variables**, set:
+   - `DATA_GOV_IN_API_KEY`: your data.gov.in key
+   - `WAQI_API_TOKEN`: your WAQI token
+   - `VITE_WAQI_PROXY_URL` = `/.netlify/functions/waqi`
+3. Deploy, then open `https://<your-site>.netlify.app/api/cpcb` to check live data.
+
+Or deploy from your computer with the Netlify CLI: run `netlify login`, then `netlify init` (or `netlify link`) and `netlify deploy --build --prod` from the repository root.
+
+### After deploying
+- **Without `DATA_GOV_IN_API_KEY`:** the site still works, but live AQI falls back to WAQI and the nearest sensor.
+- **No setup needed for weather:** temperature and humidity come from Open-Meteo in the browser.
+- **More detail:** see [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Current Features
 
 - Control bar at the top of the screen with Live/Historical toggle, station picker, date range and presets

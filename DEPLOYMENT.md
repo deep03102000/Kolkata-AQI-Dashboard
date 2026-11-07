@@ -1,13 +1,20 @@
 # Deployment
 
-This repository is ready to deploy from the repo root through Render.
+This repository is ready to deploy from the repo root through **Render** (`render.yaml`) or **Netlify** (`netlify.toml`). The README's Deploy section has step-by-step instructions.
 
 ## Render Settings
 
-- Service type: Web Service
+- Service type: Web Service (created as a Blueprint from `render.yaml`)
 - Root directory: `aqi-dashboard`
 - Build command: `npm ci && npm run build`
 - Start command: `node server.mjs`
+- Plan: `starter` in `render.yaml`. Change it to `free` for a free instance; free instances sleep when idle, so the first visit after a pause is slow.
+
+## Netlify Settings
+
+- Base directory `aqi-dashboard`, build command `npm run build`, publish directory `dist`, functions `netlify/functions` (all set in `netlify.toml`)
+- `/api/cpcb` is redirected to the `cpcb` function
+- Set `VITE_WAQI_PROXY_URL=/.netlify/functions/waqi`; on Netlify the WAQI proxy is the `waqi` function
 
 ## Required Environment Variables
 
