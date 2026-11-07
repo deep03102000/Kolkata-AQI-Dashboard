@@ -30,7 +30,7 @@ Set secrets in the Render dashboard (Environment). `render.yaml` lists them with
 
 - The hosted app is the React/Vite project in `aqi-dashboard/`.
 - The Render web service serves the built frontend, the `/api/cpcb` CPCB route and the `/api/waqi` proxy from the same origin.
-- On Netlify, `/api/cpcb` is served by `netlify/functions/cpcb.mjs` through a redirect in `netlify.toml`. Set `DATA_GOV_IN_API_KEY` under Site settings → Environment variables.
+- On Netlify, `/api/cpcb` is forwarded to the Mumbai function (see "CPCB Proxy in Mumbai" below), because data.gov.in refuses Netlify's US servers. `netlify/functions/cpcb.mjs` stays as a fallback route.
 - Temperature and humidity are fetched by the browser directly from Open-Meteo, so they need no key or server setting.
 - Live data sources are described in [docs/live-data-sources.md](docs/live-data-sources.md).
 - The root-level dataset and docs stay in the repository, but they are not deployed as site content.
