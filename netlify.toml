@@ -4,6 +4,23 @@
   publish = "dist"
   functions = "netlify/functions"
 
+# Vite 8 needs Node 20.19+; the WAQI proxy path is not a secret, so it lives here.
+[build.environment]
+  NODE_VERSION = "22"
+  VITE_WAQI_PROXY_URL = "/.netlify/functions/waqi"
+
+# Hashed build files never change: cache them for a year.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Station history and map geometry change rarely: cache for a day, then revalidate.
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 [[redirects]]
   from = "/api/cpcb"
   to = "/.netlify/functions/cpcb"
