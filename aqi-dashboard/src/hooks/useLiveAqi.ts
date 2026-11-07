@@ -536,10 +536,11 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
     }
 
     const uid = resolveWaqiUid(station);
+    const waqiAvailable = hasWaqiLiveAccess();
     let officialResult: LiveAqiResult | null = null;
     let officialError: unknown = null;
 
-    if (uid !== null) {
+    if (uid !== null && waqiAvailable) {
       try {
         officialResult = await fetchWaqiStationFeed(
           buildWaqiUidFeedUrl(uid),
@@ -559,7 +560,7 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
 
     // Official station feed missing or stale: use the nearest live sensor.
     let result = officialIsFresh ? officialResult : null;
-    if (!result) {
+    if (!result && waqiAvailable) {
       try {
         result = await loadNearestLiveSensor(station, fallbackPollutants, uid);
       } catch (error) {
@@ -620,10 +621,6 @@ export async function loadLiveAqiSnapshot(
   return result.payload;
 }
 export function prefetchLiveAqiStations(stationIds: string[]) {
-  if (!hasWaqiLiveAccess()) {
-    return Promise.resolve([]);
-  }
-
   return Promise.allSettled(
     stationIds
       .filter((stationId) => stationId.trim().length > 0)
@@ -669,15 +666,8 @@ export function useLiveAqi(stationId: string | null, enabled = true) {
     }
 
     const activeStationId = stationId;
-
-    if (!hasWaqiLiveAccess()) {
-      hasLoadedRef.current = false;
-      setData(null);
-      setLoading(false);
-      setError(new Error("WAQI access is missing"));
-      setStale(false);
-      return;
-    }
+    // No WAQI-access check here: CPCB (/api/cpcb) works without it, and the
+    // WAQI fallback steps are skipped inside loadLiveAqi when WAQI isn't set up.
 
     let cancelled = false;
 
