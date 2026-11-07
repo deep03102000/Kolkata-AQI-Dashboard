@@ -13,7 +13,13 @@
 
 const RESOURCE_URL = 'https://api.data.gov.in/resource/3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69'
 const CITY = 'Kolkata'
+// Cache lifetimes. CPCB publishes each hour's reading roughly 25–40 min after the
+// hour, so once the next reading is due we re-check every minute; otherwise every 5.
 const CACHE_TTL_MS = 5 * 60 * 1000
+const CACHE_TTL_WHEN_DUE_MS = 60 * 1000
+const NEXT_READING_DUE_AFTER_MS = (60 + 25) * 60 * 1000
+// A page reload asks for fresh data; never hit data.gov.in more often than this.
+const MIN_FRESH_INTERVAL_MS = 30 * 1000
 const REQUEST_TIMEOUT_MS = 20_000
 
 const POLLUTANT_KEYS = {
@@ -103,16 +109,38 @@ async function fetchFromDataGovIn(apiKey) {
   }
 }
 
+function cacheTtlMs(body) {
+  const newest = body.stations
+    .map((station) => (station.lastUpdate ? new Date(station.lastUpdate).getTime() : 0))
+    .reduce((max, value) => Math.max(max, value), 0)
+  const nextReadingDue = newest > 0 && Date.now() >= newest + NEXT_READING_DUE_AFTER_MS
+  return nextReadingDue ? CACHE_TTL_WHEN_DUE_MS : CACHE_TTL_MS
+}
+
+function isCacheUsable(fresh) {
+  if (!cache) {
+    return false
+  }
+  const age = Date.now() - cache.at
+  return fresh ? age < MIN_FRESH_INTERVAL_MS : age < cacheTtlMs(cache.body)
+}
+
+/** True when the request asks to skip the cache (the browser sends ?fresh=1 on page load). */
+export function wantsFreshCpcbData(searchParams) {
+  return searchParams?.get?.('fresh') === '1' || searchParams?.fresh === '1'
+}
+
 /**
  * Returns `{ status, body }` for an HTTP handler to send.
  * 503 `not_configured` when no key is set, so clients can quietly skip this source.
+ * `fresh` skips the cache (still at most one upstream call per 30 s).
  */
-export async function getKolkataCpcbFeed(apiKey) {
+export async function getKolkataCpcbFeed(apiKey, { fresh = false } = {}) {
   if (!apiKey) {
     return { status: 503, body: { error: 'not_configured', message: 'DATA_GOV_IN_API_KEY is not set' } }
   }
 
-  if (cache && Date.now() - cache.at < CACHE_TTL_MS) {
+  if (isCacheUsable(fresh)) {
     return { status: 200, body: cache.body }
   }
 

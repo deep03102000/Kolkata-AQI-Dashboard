@@ -1,5 +1,5 @@
 ﻿import { defineConfig, loadEnv } from 'vite'
-import { getCpcbApiKey, getKolkataCpcbFeed } from './shared/cpcbFeed.mjs'
+import { getCpcbApiKey, getKolkataCpcbFeed, wantsFreshCpcbData } from './shared/cpcbFeed.mjs'
 
 const CPCB_PROXY_PATH = '/api/cpcb'
 
@@ -78,7 +78,9 @@ function createCpcbMiddleware(env) {
       return
     }
 
-    const { status, body } = await getKolkataCpcbFeed(apiKey)
+    const { status, body } = await getKolkataCpcbFeed(apiKey, {
+      fresh: wantsFreshCpcbData(requestUrl.searchParams),
+    })
     createJsonResponder(res)(status, body)
   }
 }

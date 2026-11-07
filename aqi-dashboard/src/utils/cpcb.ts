@@ -25,9 +25,14 @@ type CpcbFeed = {
 export const CPCB_VALUE_KIND: 'subindex' | 'concentration' = 'subindex'
 
 const FEED_URL = '/api/cpcb'
-const FEED_CACHE_TTL_MS = 2 * 60 * 1000
+// The server decides how often data.gov.in is actually called (see shared/cpcbFeed.mjs);
+// the browser just re-asks the server once a minute.
+const FEED_CACHE_TTL_MS = 60 * 1000
 
 let feedRequest: { at: number; promise: Promise<CpcbFeed | null> } | null = null
+// Module state resets on every page load, so the first request after a reload or
+// refresh asks the server to skip its cache and fetch the newest CPCB data.
+let isFirstRequestThisPage = true
 // Set when the server has no API key, so we stop asking for the rest of the session.
 let notConfigured = false
 
@@ -40,8 +45,11 @@ export async function loadCpcbFeed(): Promise<CpcbFeed | null> {
     return feedRequest.promise
   }
 
+  const fresh = isFirstRequestThisPage
+  isFirstRequestThisPage = false
+
   const promise = (async () => {
-    const response = await fetch(resolveAppUrl(FEED_URL), { cache: 'no-store' })
+    const response = await fetch(resolveAppUrl(fresh ? `${FEED_URL}?fresh=1` : FEED_URL), { cache: 'no-store' })
     if (response.status === 503) {
       notConfigured = true
       return null

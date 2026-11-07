@@ -2,7 +2,7 @@ import { createReadStream, promises as fs } from 'node:fs'
 import http from 'node:http'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { getCpcbApiKey, getKolkataCpcbFeed } from './shared/cpcbFeed.mjs'
+import { getCpcbApiKey, getKolkataCpcbFeed, wantsFreshCpcbData } from './shared/cpcbFeed.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distDir = path.join(__dirname, 'dist')
@@ -144,7 +144,9 @@ const server = http.createServer(async (req, res) => {
       sendJson(res, 405, { error: 'Method not allowed' })
       return
     }
-    const { status, body } = await getKolkataCpcbFeed(getCpcbApiKey(process.env))
+    const { status, body } = await getKolkataCpcbFeed(getCpcbApiKey(process.env), {
+      fresh: wantsFreshCpcbData(requestUrl.searchParams),
+    })
     sendJson(res, status, body)
     return
   }
