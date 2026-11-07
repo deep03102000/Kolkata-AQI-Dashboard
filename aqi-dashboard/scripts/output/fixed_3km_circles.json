@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-07-06T07:42:23.118Z",
+  "source_station_master": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "base_circle_radius_km": 3,
+  "base_circle_steps": 64,
+  "circle_count": 6,
+  "circles": [
+    {
+      "station_id": "site_5238",
+      "station_name": "Ballygunge",
+      "station_latitude": 22.5191616,
+      "station_longitude": 88.3721923,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    },
+    {
+      "station_id": "site_5129",
+      "station_name": "Bidhannagar",
+      "station_latitude": 22.59123,
+      "station_longitude": 88.390737,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    },
+    {
+      "station_id": "site_5110",
+      "station_name": "Fort William",
+      "station_latitude": 22.5577,
+      "station_longitude": 88.338,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    },
+    {
+      "station_id": "site_5111",
+      "station_name": "Jadavpur",
+      "station_latitude": 22.502513,
+      "station_longitude": 88.3676051,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    },
+    {
+      "station_id": "site_5126",
+      "station_name": "Rabindra Sarobar",
+      "station_latitude": 22.5057,
+      "station_longitude": 88.34521,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    },
+    {
+      "station_id": "site_296",
+      "station_name": "Rabindra Bharati University",
+      "station_latitude": 22.5844542,
+      "station_longitude": 88.3593841,
+      "base_circle_radius_km": 3,
+      "base_circle_steps": 64,
+      "geometry_role": "phase12_base_circle"
+    }
+  ]
+}

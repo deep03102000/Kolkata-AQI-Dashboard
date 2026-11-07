@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-07-06T07:42:23.118Z",
+  "source_station_master": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv",
+  "station_count": 6,
+  "base_circle_radius_km": 3,
+  "base_circle_steps": 64,
+  "circle_count": 6,
+  "note": "Phase 12 base layer: one 3 km turf.circle() per station, stored separately from the earlier Phase 3.4 1 km circle dataset and the Phase 8 Voronoi cells so no existing geometry output is overwritten."
+}

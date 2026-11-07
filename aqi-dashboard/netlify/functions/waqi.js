@@ -12,7 +12,7 @@ function sendJson(statusCode, body) {
 }
 
 function isAllowedPath(path) {
-  return /^feed\/(?:geo:[^?]+|@\d+)\/?$/.test(path)
+  return /^(?:feed\/@-?\d+\/?|map\/bounds\/?\?latlng=[-\d.]+(?:,[-\d.]+){3}&networks=all)$/.test(path)
 }
 
 exports.handler = async function handler(event) {

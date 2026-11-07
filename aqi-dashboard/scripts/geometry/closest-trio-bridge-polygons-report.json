@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-07-14T21:12:59.167Z",
+  "source_trio_pairs_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\closest_trio_pairs.json",
+  "source_3km_circles_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\circles_3km.json",
+  "source_distance_report": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\geometry\\station-distance-report.json",
+  "source_trio_qualifying_pair_count": 3,
+  "qualifying_pair_count": 3,
+  "bridge_polygon_input_count": 3,
+  "expected_exported_polygon_count": 3,
+  "degenerate_touch_pair_count": 0,
+  "null_intersection_pair_count": 0,
+  "note": "Phase 12.9.4 reuses the shared turf.intersect() lens intersection helper from the general bridge polygon pipeline, applies the same 12.4.5/12.4.6 degenerate-touch and null-intersection handling, and writes the trio result to closest_trio_bridge_polygons.json instead of bridge_polygons.json.",
+  "public_geo_output_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\closest_trio_bridge_polygons.json",
+  "source_trio_pairs_generated_at": "2026-07-14T20:45:17.826Z",
+  "source_3km_circles_generated_at": "2026-07-06T07:42:23.118Z",
+  "source_3km_circles_station_master": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv"
+}

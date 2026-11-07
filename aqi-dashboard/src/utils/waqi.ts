@@ -28,6 +28,7 @@ export type WaqiFeedResponse = {
       s?: string
       tz?: string
       v?: number
+      iso?: string
     }
     attributions?: Array<{
       name?: string
@@ -44,6 +45,16 @@ export type WaqiResolvedPollutant = {
 
 export type WaqiResolvedPollutants = Record<WaqiPollutantKey, WaqiResolvedPollutant>
 
+/**
+ * Set when the official station feed was stale and the reading came from the
+ * nearest live WAQI sensor (typically a WBPCB low-cost sensor) instead.
+ */
+export type WaqiNearbySensor = {
+  uid: number
+  name: string
+  distanceKm: number
+}
+
 export type WaqiLiveStationData = {
   aqi: number
   idx: number | null
@@ -53,6 +64,22 @@ export type WaqiLiveStationData = {
   updatedAt: string | null
   pollutants: WaqiResolvedPollutants
   raw: NonNullable<WaqiFeedResponse['data']>
+  nearbySensor?: WaqiNearbySensor | null
+  /** Set when the reading came straight from CPCB's own station feed (data.gov.in). */
+  cpcbStation?: string | null
+}
+
+export type WaqiBoundsStation = {
+  uid: number
+  lat: number
+  lon: number
+  aqi: string
+  station?: { name?: string; time?: string }
+}
+
+export type WaqiBoundsResponse = {
+  status: 'ok' | 'error'
+  data?: WaqiBoundsStation[] | string
 }
 
 export type WaqiNormalizedPollutants = Record<WaqiPollutantKey, number | null>
@@ -68,6 +95,8 @@ export type LiveAqiData = {
   cityName: string | null
   cityUrl: string | null
   raw: NonNullable<WaqiFeedResponse['data']> | null
+  nearbySensor: WaqiNearbySensor | null
+  cpcbStation: string | null
 }
 
 export function getWaqiToken() {
@@ -75,16 +104,7 @@ export function getWaqiToken() {
 }
 
 export function getWaqiProxyUrl() {
-  const configuredProxy = import.meta.env.VITE_WAQI_PROXY_URL?.trim() ?? ''
-  if (configuredProxy) {
-    return configuredProxy
-  }
-
-  if (import.meta.env.DEV) {
-    return '/.netlify/functions/waqi'
-  }
-
-  return '/api/waqi'
+  return import.meta.env.VITE_WAQI_PROXY_URL?.trim() ?? ''
 }
 
 export function hasWaqiToken() {
@@ -120,6 +140,8 @@ function buildWaqiRequestUrl(path: string) {
     return url.toString()
   }
 
+  // Note: WAQI's feed/geo: endpoint is not used — it returns unrelated cities
+  // (e.g. Lhasa) for Kolkata coordinates.
   const url = new URL(path, WAQI_API_BASE_URL)
   const token = getWaqiToken()
 
@@ -130,12 +152,14 @@ function buildWaqiRequestUrl(path: string) {
   return url.toString()
 }
 
-export function buildWaqiGeoFeedUrl(latitude: number, longitude: number) {
-  return buildWaqiRequestUrl(`feed/geo:${latitude};${longitude}/`)
-}
-
 export function buildWaqiUidFeedUrl(uid: number) {
   return buildWaqiRequestUrl(`feed/@${uid}/`)
+}
+
+export function buildWaqiBoundsUrl(south: number, west: number, north: number, east: number) {
+  const latlng = [south, west, north, east].map((value) => value.toFixed(4)).join(',')
+  // networks=all is required; without it WAQI omits the WBPCB sensor network.
+  return buildWaqiRequestUrl(`map/bounds/?latlng=${latlng}&networks=all`)
 }
 
 export function formatWaqiTimestamp(value: string | null) {
@@ -227,17 +251,27 @@ export function buildResolvedWaqiPollutants(
 
 export function getLiveWaqiSummary(data: WaqiLiveStationData): AqiSummary {
   const category = getAqiCategory(data.aqi)
+  const sensor = data.nearbySensor ?? null
 
   return {
     value: Math.round(data.aqi),
     category,
-    sourceLabel: 'Live AQI',
+    sourceLabel: data.cpcbStation
+      ? 'Live AQI · CPCB station'
+      : sensor
+        ? 'Live AQI · nearest sensor'
+        : 'Live AQI · WAQI',
     detailLabel: [
-      data.cityName ?? (data.idx !== null ? `WAQI node #${data.idx}` : 'WAQI node'),
-      data.updatedAt ? `Updated ${data.updatedAt}` : null,
+      data.cpcbStation
+        ? `${data.cpcbStation} (official CPCB reading)`
+        : sensor
+          ? `From ${sensor.name} (${sensor.distanceKm.toFixed(1)} km away; station feed offline)`
+          : data.cityName ?? (data.idx !== null ? `WAQI node #${data.idx}` : 'WAQI node'),
+      data.updatedAt ? `Updated ${formatWaqiTimestamp(data.updatedAt)}` : null,
       data.dominantPollutant ? `Dominant pollutant ${data.dominantPollutant.toUpperCase()}` : null,
     ]
       .filter((entry): entry is string => Boolean(entry))
       .join(' | '),
   }
 }
+

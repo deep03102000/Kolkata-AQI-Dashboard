@@ -2,13 +2,14 @@ import { createReadStream, promises as fs } from 'node:fs'
 import http from 'node:http'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { getCpcbApiKey, getKolkataCpcbFeed } from './shared/cpcbFeed.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distDir = path.join(__dirname, 'dist')
 const distRoot = path.resolve(distDir)
 const port = Number.parseInt(process.env.PORT ?? '10000', 10)
 const WAQI_API_BASE_URL = 'https://api.waqi.info'
-const WAQI_ALLOWED_PATH = /^feed\/(?:geo:[^?]+|@\d+)\/?$/
+const WAQI_ALLOWED_PATH = /^(?:feed\/@-?\d+\/?|map\/bounds\/?\?latlng=[-\d.]+(?:,[-\d.]+){3}&networks=all)$/
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -135,6 +136,16 @@ const server = http.createServer(async (req, res) => {
 
   if (requestUrl.pathname === '/api/waqi' || requestUrl.pathname === '/api/waqi/') {
     await handleWaqiProxy(req, res, requestUrl)
+    return
+  }
+
+  if (requestUrl.pathname === '/api/cpcb' || requestUrl.pathname === '/api/cpcb/') {
+    if (req.method !== 'GET') {
+      sendJson(res, 405, { error: 'Method not allowed' })
+      return
+    }
+    const { status, body } = await getKolkataCpcbFeed(getCpcbApiKey(process.env))
+    sendJson(res, status, body)
     return
   }
 

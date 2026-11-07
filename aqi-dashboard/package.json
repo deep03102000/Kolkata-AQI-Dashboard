@@ -21,7 +21,17 @@
     "road:join": "node scripts/geometry/road-network-segment-station-join.mjs",
     "road:validate-export": "node scripts/geometry/road-network-static-validate.mjs",
     "road:check-size": "node scripts/geometry/road-network-static-size.mjs",
-    "road:export": "node scripts/geometry/road-network-static-output.mjs && node scripts/geometry/road-network-static-validate.mjs && node scripts/geometry/road-network-static-size.mjs"
+    "road:export": "node scripts/geometry/road-network-static-output.mjs && node scripts/geometry/road-network-static-validate.mjs && node scripts/geometry/road-network-static-size.mjs",
+    "bridge:circles": "node scripts/geometry/fixed-3km-circles.mjs",
+    "bridge:pairs": "node scripts/geometry/pairwise-bridge-selection.mjs",
+    "bridge:polygons": "node scripts/geometry/pairwise-bridge-polygons.mjs",
+    "bridge:verify": "node scripts/geometry/verify-bridge-restoration.mjs",
+    "bridge:trio:pairs": "node scripts/geometry/closest-trio-bridge-selection.mjs",
+    "bridge:trio:polygons": "node scripts/geometry/closest-trio-bridge-polygons.mjs",
+    "waqi:snapshot": "node scripts/fetch-waqi-snapshot.mjs",
+    "predev": "npm run waqi:snapshot",
+    "prebuild": "npm run waqi:snapshot",
+    "prepreview": "npm run waqi:snapshot"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",

@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from 'react'
+import { resolveAppUrl } from '../utils/appUrl'
 
 export type RoadNetworkFeature = {
   type: 'Feature'
@@ -22,10 +23,10 @@ function buildRoadNetworkUrls(stationId: string | null | undefined) {
   const urls = [] as string[]
 
   if (stationId) {
-    urls.push(`/data/roads_station_${stationId}.json`)
+    urls.push(resolveAppUrl(`/data/roads_station_${stationId}.json`))
   }
 
-  urls.push('/data/kolkata_roads.json')
+  urls.push(resolveAppUrl('/data/kolkata_roads.json'))
   return urls
 }
 
@@ -101,3 +102,4 @@ export function useRoadNetworkPayload(stationId: string | null | undefined, enab
 
   return { data, status, error }
 }
+

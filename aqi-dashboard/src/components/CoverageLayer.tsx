@@ -23,6 +23,8 @@ export type CoverageStationSummary = {
 
 type CoverageLayerProps = {
   visible: boolean
+  mode: 'Live' | 'Historical'
+  roadNetworkVisible?: boolean
   stationColorMap?: Record<string, string>
   stationSummaries?: Record<string, CoverageStationSummary>
 }
@@ -51,19 +53,22 @@ function getCoverageStyle(
   feature?: CoverageFeature,
   stationColorMap?: Record<string, string>,
   stationSummaries?: Record<string, CoverageStationSummary>,
+  mode?: 'Live' | 'Historical',
 ) {
   const stationId = feature?.properties?.station_id
   const baseColor = stationId ? stationColorMap?.[stationId] ?? '#38bdf8' : '#38bdf8'
+  const isLiveMode = mode === 'Live'
   const isStale = stationId ? Boolean(stationSummaries?.[stationId]?.stale) : false
-  const strokeColor = isStale ? blendHexWithWhite(baseColor, 0.3) : baseColor
-  const fillColor = isStale ? blendHexWithWhite(baseColor, 0.5) : baseColor
+  const strokeColor = isStale ? blendHexWithWhite(baseColor, 0.08) : blendHexWithWhite(baseColor, isLiveMode ? -0.34 : -0.22)
+  const fillColor = isStale ? blendHexWithWhite(baseColor, 0.42) : baseColor
 
   return {
     fillColor,
     color: strokeColor,
-    weight: 1,
-    fillOpacity: isStale ? 0.05 : 0.08,
-    opacity: isStale ? 0.72 : 0.95,
+    weight: isLiveMode ? 3.5 : 2,
+    fillOpacity: 0.2,
+    opacity: isLiveMode ? 1 : 0.88,
+    dashArray: isStale ? '5 7' : undefined,
   }
 }
 
@@ -109,14 +114,26 @@ function syncCoveragePopupContent(layer: any, feature: CoverageFeature | undefin
 
 export function CoverageLayer({
   visible,
+  mode,
+  roadNetworkVisible = false,
   stationColorMap = {},
   stationSummaries = {},
 }: CoverageLayerProps) {
   const layerRef = useRef<LeafletGeoJSON | null>(null)
 
   const style = useMemo(() => {
-    return (feature?: CoverageFeature) => getCoverageStyle(feature, stationColorMap, stationSummaries)
-  }, [stationColorMap, stationSummaries])
+    return (feature?: CoverageFeature) => getCoverageStyle(feature, stationColorMap, stationSummaries, mode)
+  }, [mode, stationColorMap, stationSummaries])
+
+  const roadOutlineStyle = useMemo(() => {
+    return () => ({
+      color: '#2563eb',
+      weight: 5,
+      opacity: 1,
+      fillOpacity: 0,
+      dashArray: undefined,
+    })
+  }, [])
 
   useEffect(() => {
     if (!layerRef.current) {
@@ -142,14 +159,27 @@ export function CoverageLayer({
   }
 
   return (
-    <GeoJSON
-      ref={layerRef}
-      data={voronoiCells as any}
-      interactive={true}
-      style={style as any}
-      onEachFeature={(feature, layer) => {
-        syncCoveragePopupContent(layer, feature as CoverageFeature | undefined, stationSummaries)
-      }}
-    />
+    <>
+      <GeoJSON
+        ref={layerRef}
+        data={voronoiCells as any}
+        interactive={true}
+        style={style as any}
+        onEachFeature={(feature, layer) => {
+          syncCoveragePopupContent(layer, feature as CoverageFeature | undefined, stationSummaries)
+        }}
+      />
+      {roadNetworkVisible ? (
+        <GeoJSON
+          data={voronoiCells as any}
+          interactive={false}
+          style={roadOutlineStyle as any}
+        />
+      ) : null}
+    </>
   )
 }
+
+
+
+

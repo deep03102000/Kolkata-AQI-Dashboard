@@ -1,4 +1,4 @@
-﻿import {
+import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -31,6 +31,8 @@ type SeriesConfig = {
   label: string
   color: string
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const SERIES: SeriesConfig[] = [
   { key: 'pm25', label: 'PM2.5', color: '#0f766e' },
@@ -84,7 +86,12 @@ export default function ChartPanel({ stationName, records }: Props) {
 
   const chartData = useMemo<ChartData<'line'>>(
     () => {
-      const labels = displayRecords.map((record) => record.date.slice(5, 16).replace('T', ' '))
+      // Full label ("1 Nov, 06:00") is used by the tooltip; the axis shortens it below.
+      const labels = displayRecords.map((record) => {
+        const day = Number(record.date.slice(8, 10))
+        const month = MONTHS[Number(record.date.slice(5, 7)) - 1] ?? ''
+        return `${day} ${month}, ${record.date.slice(11, 16)}`
+      })
       const visibleSeries = SERIES.filter((series) => activeSeries[series.key])
 
       const datasets: ChartDataset<'line'>[] = visibleSeries.map((series) => ({
@@ -110,6 +117,11 @@ export default function ChartPanel({ stationName, records }: Props) {
     [activeSeries, displayRecords],
   )
 
+  const spansMultipleDays =
+    displayRecords.length > 1 &&
+    displayRecords[0].date.slice(0, 10) !== displayRecords[displayRecords.length - 1].date.slice(0, 10)
+  const isNarrow = typeof window !== 'undefined' && window.innerWidth < 640
+
   const options = useMemo<ChartOptions<'line'>>(
     () => ({
       responsive: true,
@@ -127,10 +139,15 @@ export default function ChartPanel({ stationName, records }: Props) {
       scales: {
         x: {
           ticks: {
-            maxTicksLimit: 6,
+            maxTicksLimit: isNarrow ? 4 : 7,
             color: '#64748b',
             maxRotation: 0,
             autoSkip: true,
+            callback(value) {
+              const label = String(this.getLabelForValue(Number(value)))
+              const [datePart, timePart] = label.split(', ')
+              return spansMultipleDays ? datePart : timePart
+            },
           },
           grid: {
             color: 'rgba(148, 163, 184, 0.15)',
@@ -147,33 +164,24 @@ export default function ChartPanel({ stationName, records }: Props) {
         },
       },
     }),
-    [],
+    [isNarrow, spansMultipleDays],
   )
 
   const visibleSeriesCount = SERIES.filter((series) => activeSeries[series.key]).length
 
   return (
-    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/50">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Historical chart</p>
-          <h3 className="mt-1 break-words text-sm font-semibold text-slate-900">{stationName}</h3>
-        </div>
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
-          {mode}
-        </span>
-      </div>
+    <div className="min-w-0" aria-label={`${stationName} pollutant chart`}>
 
       <SummaryStats records={displayRecords} />
 
-      <div className="mb-4 mt-4 flex flex-wrap gap-2">
+      <div className="mb-3.5 mt-3.5 flex flex-wrap gap-1.5">
         {SERIES.map((series) => {
           const checked = activeSeries[series.key]
 
           return (
             <label
               key={series.key}
-              className={`flex items-center gap-2 rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] transition ${checked ? 'border-slate-300 bg-slate-50 text-slate-800' : 'border-slate-200 bg-white text-slate-400'}`}
+              className={`flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition ${checked ? 'border-slate-300 bg-slate-50 text-slate-800' : 'border-slate-200 bg-white text-slate-400'}`}
             >
               <input
                 type="checkbox"
@@ -185,9 +193,9 @@ export default function ChartPanel({ stationName, records }: Props) {
                     [series.key]: nextChecked,
                   }))
                 }}
-                className="h-3.5 w-3.5 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                className="h-3 w-3 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
               />
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1">
                 <span className="h-2 w-2 rounded-full" style={{ backgroundColor: series.color }} />
                 {series.label}
               </span>
@@ -196,7 +204,7 @@ export default function ChartPanel({ stationName, records }: Props) {
         })}
       </div>
 
-      <div className="h-64 min-w-0">
+      <div className="h-56 min-w-0 sm:h-60">
         {displayRecords.length > 0 && visibleSeriesCount > 0 ? (
           <Line data={chartData} options={options} />
         ) : (

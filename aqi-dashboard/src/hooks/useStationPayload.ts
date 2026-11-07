@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import type { PollutantRecord } from '../utils/aqi'
+import { resolveAppUrl } from '../utils/appUrl'
 
 type StationGeo = {
   station_id: string
@@ -29,7 +30,7 @@ export function useStationPayload(stationId: string, enabled = true) {
     const request =
       stationPayloadCache.get(stationId) ??
       (() => {
-        const promise = fetch(`/data/station_${stationId}.json`).then((response) => {
+        const promise = fetch(resolveAppUrl(`/data/station_${stationId}.json`)).then((response) => {
           if (!response.ok) {
             throw new Error(`Failed to load data for ${stationId}`)
           }

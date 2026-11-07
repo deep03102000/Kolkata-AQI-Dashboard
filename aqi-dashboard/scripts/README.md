@@ -1,4 +1,4 @@
-﻿# Build-Time Scripts
+# Build-Time Scripts
 
 This folder is reserved for build-time-only geometry and preprocessing tooling.
 
@@ -7,6 +7,7 @@ Keep these utilities outside `src/` so they stay clearly separate from the runti
 Planned use:
 
 - station distance calculations
+- pairwise bridge pair selection for Phase 12
 - Voronoi coverage generation
 - raw Voronoi point extraction
 - finite Voronoi bounds artifacts
@@ -27,7 +28,10 @@ Run them with npm scripts:
 - `npm run road:crossings` for testing which road LineStrings intersect Voronoi cell boundaries and generating the split candidates
 - `npm run road:split` for splitting crossing roads, carrying untouched roads through as single segments, and writing a small spot-check GeoJSON plus validation report
 - `npm run road:join` for assigning each split segment by testing which Voronoi cell contains the segment midpoint, with a nearest-station fallback when needed
+- `npm run bridge:polygons` for filtering the station pair graph down to the qualifying Phase 12 bridge candidates and exporting line-seed GeoJSON
 - `npm run road:export` for publishing the joined road segments to `aqi-dashboard/public/data/kolkata_roads.json` as the frontend-ready static asset and validating it immediately after write
 - `npm run validate:geojson` for validating the final public Voronoi export on demand
 - `npm run road:validate-export` for validating the exported road GeoJSON structure on demand
 - `npm run road:check-size` for sanity-checking the published road file against the size budget and splitting it into per-station files if needed
+
+

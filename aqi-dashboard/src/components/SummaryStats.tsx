@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+﻿import { useMemo } from 'react'
 import { calculateRecordAqi, type PollutantRecord } from '../utils/aqi'
 
 type Props = {
@@ -35,16 +35,18 @@ export function SummaryStats({ records }: Props) {
   }, [records])
 
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid gap-2 sm:grid-cols-3">
       {stats.map((stat) => (
-        <div key={stat.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-            {stat.label}
-          </p>
-          <div className={`mt-2 text-3xl font-semibold tracking-tight ${stat.accentClass}`}>
-            {stat.value ?? '—'}
+        <div key={stat.label} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 sm:px-3.5 sm:py-3">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              {stat.label}
+            </p>
+            <span className={`text-sm font-semibold leading-none ${stat.accentClass}`}>
+              {stat.value ?? '—'}
+            </span>
           </div>
-          <p className="mt-1 text-xs leading-5 text-slate-500">AQI for the filtered range</p>
+          <p className="mt-1 text-[10px] leading-4 text-slate-500">Filtered range</p>
         </div>
       ))}
     </div>

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import type { PollutantRecord } from '../utils/aqi'
+import { resolveAppUrl } from '../utils/appUrl'
 
 export type StationHistory = {
   station_id: string
@@ -20,7 +21,7 @@ function loadStationHistory(stationId: string) {
     return cached
   }
 
-  const request = fetch(`/data/station_${stationId}.json`).then((response) => {
+  const request = fetch(resolveAppUrl(`/data/station_${stationId}.json`)).then((response) => {
     if (!response.ok) {
       throw new Error(`Failed to load history for station ${stationId}`)
     }
@@ -72,3 +73,4 @@ export function useStationHistory(stationId: string | null | undefined) {
 
   return { data, status, error }
 }
+

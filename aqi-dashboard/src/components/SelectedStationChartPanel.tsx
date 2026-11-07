@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useStationContext } from '../context/StationContext'
+import { resolveAppUrl } from '../utils/appUrl'
 import { useStationHistory } from '../hooks/useStationHistory'
 
 const ChartPanel = lazy(() => import('./ChartPanel'))
@@ -24,14 +25,31 @@ function AlertBanner({ tone, children }: { tone: 'error' | 'loading'; children: 
   return <div className={`rounded-2xl border px-3 py-2 text-sm ${styles}`}>{children}</div>
 }
 
+function formatDateLabel(value: string | null) {
+  if (!value) {
+    return 'Not selected'
+  }
+
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(parsed)
+}
+
 export function SelectedStationChartPanel() {
-  const { selectedStationId, mode } = useStationContext()
+  const { selectedStationId, mode, dateRange } = useStationContext()
   const [stations, setStations] = useState<StationGeo[]>([])
 
   useEffect(() => {
     let active = true
 
-    fetch('/data/station_master.json')
+    fetch(resolveAppUrl('/data/station_master.json'))
       .then((response) => response.json() as Promise<StationGeo[]>)
       .then((data) => {
         if (active) {
@@ -56,43 +74,52 @@ export function SelectedStationChartPanel() {
 
   const { data: historicalData, status, error } = useStationHistory(selectedStation?.station_id ?? null)
 
+  const historicalRangeLabel = useMemo(() => {
+    const start = formatDateLabel(dateRange.startDate)
+    const end = formatDateLabel(dateRange.endDate)
+    return `${start} to ${end}`
+  }, [dateRange.endDate, dateRange.startDate])
+
   return (
-    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-5">
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-600">Chart Panel</p>
-          <h2 className="mt-1 text-lg font-semibold text-slate-900">Selected Station Overview</h2>
-        </div>
-        <span className="inline-flex max-w-full self-start rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:self-auto">
-          <span className="truncate">{mode}</span>
-        </span>
+    <section className="min-w-0 rounded-3xl border border-slate-200 bg-white/90 p-3.5 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-4">
+      <div className="mb-3 min-w-0">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Pollutant trend{selectedStation ? ` · ${selectedStation.station_name}` : ''}
+        </h2>
+        <p className="mt-0.5 text-xs text-slate-500">
+          {mode === 'Historical'
+            ? dateRange.startDate && dateRange.endDate
+              ? historicalRangeLabel
+              : 'Pick a date range at the top'
+            : 'Most recent recorded day (live readings have no history yet; switch to Historical for any range)'}
+        </p>
       </div>
 
       {!selectedStation ? (
-        <p className="text-sm leading-6 text-slate-600">
-          Select a station marker on the map to load its AQI trend here.
+        <p className="rounded-2xl border border-dashed border-slate-200 px-3 py-6 text-center text-sm leading-6 text-slate-500">
+          Select a station on the map, in the list, or with the picker at the top to see its trend.
         </p>
       ) : status === 'loading' ? (
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           <AlertBanner tone="loading">Loading chart data...</AlertBanner>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <SkeletonLine className="h-3 w-28" />
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <SkeletonLine className="h-3 w-16" />
-                <SkeletonLine className="mt-3 h-8 w-16" />
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5">
+            <SkeletonLine className="h-3 w-24" />
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                <SkeletonLine className="h-3 w-14" />
+                <SkeletonLine className="mt-2.5 h-7 w-14" />
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <SkeletonLine className="h-3 w-16" />
-                <SkeletonLine className="mt-3 h-8 w-16" />
+              <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                <SkeletonLine className="h-3 w-14" />
+                <SkeletonLine className="mt-2.5 h-7 w-14" />
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <SkeletonLine className="h-3 w-16" />
-                <SkeletonLine className="mt-3 h-8 w-16" />
+              <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                <SkeletonLine className="h-3 w-14" />
+                <SkeletonLine className="mt-2.5 h-7 w-14" />
               </div>
             </div>
-            <SkeletonLine className="mt-4 h-10 w-full rounded-2xl" />
-            <SkeletonLine className="mt-3 h-64 w-full rounded-2xl" />
+            <SkeletonLine className="mt-3 h-9 w-full rounded-2xl" />
+            <SkeletonLine className="mt-2.5 h-56 w-full rounded-2xl" />
           </div>
         </div>
       ) : status === 'error' || !historicalData ? (
@@ -102,7 +129,7 @@ export function SelectedStationChartPanel() {
       ) : (
         <Suspense
           fallback={
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500 shadow-sm shadow-slate-200/50">
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 text-sm text-slate-500 shadow-sm shadow-slate-200/50">
               Loading chart panel...
             </div>
           }

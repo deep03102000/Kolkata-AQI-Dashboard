@@ -19,7 +19,8 @@ export function useWaqiLiveStation(station: StationRef | null, enabled = true) {
   const { data: liveAqi, loading, error, stale } = useLiveAqi(station?.station_id ?? null, enabled)
 
   const data = useMemo<WaqiLiveStationData | null>(() => {
-    if (!liveAqi || liveAqi.aqi === null || !liveAqi.raw) {
+    // CPCB readings have no raw WAQI payload, so only the AQI value is required.
+    if (!liveAqi || liveAqi.aqi === null) {
       return null
     }
 
@@ -31,7 +32,15 @@ export function useWaqiLiveStation(station: StationRef | null, enabled = true) {
       dominantPollutant: liveAqi.dominantPollutant,
       updatedAt: liveAqi.updatedAt,
       pollutants: liveAqi.pollutants,
-      raw: liveAqi.raw,
+      nearbySensor: liveAqi.nearbySensor,
+      cpcbStation: liveAqi.cpcbStation,
+      raw: liveAqi.raw ?? {
+        aqi: liveAqi.aqi,
+        iaqi: {},
+        city: { name: liveAqi.cityName ?? liveAqi.stationName ?? undefined },
+        dominentpol: liveAqi.dominantPollutant ?? undefined,
+        time: liveAqi.updatedAt ? { s: liveAqi.updatedAt } : undefined,
+      },
     }
   }, [liveAqi])
 

@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-07-06T13:31:11.591Z",
+  "source_qualifying_pairs_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\output\\qualifying_pairs.json",
+  "source_3km_circles_path": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\public\\data\\circles_3km.json",
+  "source_distance_report": "D:\\Applications\\kolkata-aqi-dashboard\\aqi-dashboard\\scripts\\geometry\\station-distance-report.json",
+  "qualifying_pair_count": 7,
+  "bridge_polygon_input_count": 7,
+  "expected_exported_polygon_count": 7,
+  "degenerate_touch_pair_count": 0,
+  "null_intersection_pair_count": 0,
+  "note": "Phase 12.4.3 computes the turf.intersect() of each qualifying pair's two 3 km circles to produce the lens-shaped bridge polygon. Phase 12.4.5 filters exact 6 km circle-touch pairs before any zero-area geometry is emitted. Phase 12.4.6 silently filters any unexpected null intersect result. Phase 12.4.8 validates the exported polygon count against the filtered input counts.",
+  "source_qualifying_pairs_generated_at": "2026-07-06T05:18:15.588Z",
+  "source_3km_circles_generated_at": "2026-07-06T07:42:23.118Z",
+  "source_3km_circles_station_master": "D:\\Applications\\kolkata-aqi-dashboard\\Dataset\\master\\station_master.csv"
+}

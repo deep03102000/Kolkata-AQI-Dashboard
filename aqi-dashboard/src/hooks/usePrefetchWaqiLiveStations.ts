@@ -1,5 +1,6 @@
 ﻿import { useEffect } from 'react'
 import { prefetchWaqiLiveStations } from './useWaqiLiveStation'
+import { resolveAppUrl } from '../utils/appUrl'
 
 type StationGeo = {
   station_id: string
@@ -12,7 +13,7 @@ export function usePrefetchWaqiLiveStations() {
   useEffect(() => {
     let cancelled = false
 
-    fetch('/data/station_master.json')
+    fetch(resolveAppUrl('/data/station_master.json'))
       .then((response) => response.json() as Promise<StationGeo[]>)
       .then((stations) => {
         if (!cancelled) {
@@ -26,3 +27,4 @@ export function usePrefetchWaqiLiveStations() {
     }
   }, [])
 }
+

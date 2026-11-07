@@ -87,6 +87,7 @@ const BREAKPOINTS: Record<keyof Pick<PollutantRecord, 'pm25' | 'pm10' | 'no2' | 
   ],
 }
 
+// getAqiColor() reads directly from these official CPCB hex values; do not swap in any softened/pastel legacy circle palette here.
 const AQI_CATEGORIES: Array<{ ceiling: number; label: string; className: string; color: string }> = [
   { ceiling: 50, label: 'Good', className: 'bg-emerald-50 text-emerald-700 ring-emerald-200', color: '#10b981' },
   { ceiling: 100, label: 'Satisfactory', className: 'bg-lime-50 text-lime-700 ring-lime-200', color: '#84cc16' },
@@ -166,6 +167,47 @@ function filterRecordsByRange(records: PollutantRecord[], dateRange: DateRange) 
   })
 }
 
+const isoDateFormatter = new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+
+function formatIsoDate(value: string | null) {
+  if (!value) {
+    return ''
+  }
+  const parsed = new Date(`${value}T00:00:00`)
+  return Number.isNaN(parsed.getTime()) ? value : isoDateFormatter.format(parsed)
+}
+
+export type HistoricalRangeAqi = {
+  value: number
+  category: AqiCategory
+  readingCount: number
+}
+
+/** Mean AQI across every reading inside the date range (inclusive), or null if none. */
+export function getHistoricalRangeAqi(records: PollutantRecord[], dateRange: DateRange): HistoricalRangeAqi | null {
+  let sum = 0
+  let readingCount = 0
+
+  for (const record of filterRecordsByRange(records, dateRange)) {
+    const value = calculateRecordAqi(record)
+    if (value !== null) {
+      sum += value
+      readingCount += 1
+    }
+  }
+
+  if (readingCount === 0) {
+    return null
+  }
+
+  const average = sum / readingCount
+  return {
+    value: Math.round(average),
+    category: getAqiCategory(average),
+    readingCount,
+  }
+}
+
 export function getStationAqiSummary(records: PollutantRecord[], mode: StationMode, dateRange: DateRange) {
   const sortedRecords = [...records].sort((left, right) => left.date.localeCompare(right.date))
   const latestRecord = sortedRecords[sortedRecords.length - 1]
@@ -180,21 +222,14 @@ export function getStationAqiSummary(records: PollutantRecord[], mode: StationMo
   }
 
   if (mode === 'Historical') {
-    const filtered = filterRecordsByRange(sortedRecords, dateRange)
-    if (filtered.length > 0) {
-      const values = filtered
-        .map((record) => calculateRecordAqi(record))
-        .filter((value): value is number => typeof value === 'number')
-
-      if (values.length > 0) {
-        const average = values.reduce((sum, value) => sum + value, 0) / values.length
-        return {
-          value: Math.round(average),
-          category: getAqiCategory(average),
-          sourceLabel: 'Historical AQI',
-          detailLabel: `${dateRange.startDate} to ${dateRange.endDate}`,
-        } satisfies AqiSummary
-      }
+    const rangeAqi = getHistoricalRangeAqi(sortedRecords, dateRange)
+    if (rangeAqi) {
+      return {
+        value: rangeAqi.value,
+        category: rangeAqi.category,
+        sourceLabel: 'Historical AQI',
+        detailLabel: `${formatIsoDate(dateRange.startDate)} – ${formatIsoDate(dateRange.endDate)}`,
+      } satisfies AqiSummary
     }
   }
 

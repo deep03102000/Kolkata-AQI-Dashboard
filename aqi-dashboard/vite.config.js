@@ -1,8 +1,11 @@
 ﻿import { defineConfig, loadEnv } from 'vite'
+import { getCpcbApiKey, getKolkataCpcbFeed } from './shared/cpcbFeed.mjs'
+
+const CPCB_PROXY_PATH = '/api/cpcb'
 
 const WAQI_API_BASE_URL = 'https://api.waqi.info'
 const WAQI_PROXY_PATH = '/.netlify/functions/waqi'
-const WAQI_ALLOWED_PATH = /^feed\/(?:geo:[^?]+|@\d+)\/?$/
+const WAQI_ALLOWED_PATH = /^(?:feed\/@-?\d+\/?|map\/bounds\/?\?latlng=[-\d.]+(?:,[-\d.]+){3}&networks=all)$/
 
 function createJsonResponder(res) {
   return (statusCode, body) => {
@@ -60,15 +63,38 @@ function createWaqiMiddleware(env) {
   }
 }
 
+function createCpcbMiddleware(env) {
+  const apiKey = getCpcbApiKey(env)
+
+  return async function cpcbMiddleware(req, res, next) {
+    const requestUrl = new URL(req.url || '', 'http://localhost')
+    if (requestUrl.pathname !== CPCB_PROXY_PATH) {
+      next()
+      return
+    }
+
+    if (req.method !== 'GET') {
+      createJsonResponder(res)(405, { error: 'Method not allowed' })
+      return
+    }
+
+    const { status, body } = await getKolkataCpcbFeed(apiKey)
+    createJsonResponder(res)(status, body)
+  }
+}
+
 function waqiProxyPlugin(env) {
   const middleware = createWaqiMiddleware(env)
+  const cpcbMiddleware = createCpcbMiddleware(env)
 
   return {
     name: 'waqi-dev-proxy',
     configureServer(server) {
+      server.middlewares.use(cpcbMiddleware)
       server.middlewares.use(middleware)
     },
     configurePreviewServer(server) {
+      server.middlewares.use(cpcbMiddleware)
       server.middlewares.use(middleware)
     },
   }
@@ -78,6 +104,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
+    base: './',
     cacheDir: 'C:/tmp/aqi-dashboard-vite-cache',
     plugins: [waqiProxyPlugin(env)],
     server: {
@@ -109,3 +136,4 @@ export default defineConfig(({ mode }) => {
     },
   }
 })
+

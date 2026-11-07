@@ -1,10 +1,12 @@
-﻿import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { Icon } from 'leaflet'
 import { useStationContext } from '../context/StationContext'
 import { useLiveAqi } from '../hooks/useLiveAqi'
+import { useStationHistory } from '../hooks/useStationHistory'
 import { useRoadNetworkPayload } from '../hooks/useRoadNetworkPayload'
-import { getAqiColor, type AqiSummary } from '../utils/aqi'
+import { getAqiColor, getStationAqiSummary, type AqiSummary } from '../utils/aqi'
+import { resolveAppUrl } from '../utils/appUrl'
 import { getLiveWaqiSummary, type WaqiLiveStationData } from '../utils/waqi'
 import type { CoverageStationSummary } from './CoverageLayer'
 
@@ -17,7 +19,11 @@ const LeafletMarker = Marker as unknown as ComponentType<any>
 const LeafletPopup = Popup as unknown as ComponentType<any>
 const LeafletCircle = Circle as unknown as ComponentType<any>
 const CoverageLayer = lazy(() => import('./CoverageLayer').then((module) => ({ default: module.CoverageLayer })))
+const LazyCircle3kmLayer = lazy(() => import('./Circle3kmLayer').then((module) => ({ default: module.Circle3kmLayer })))
 const LazyRoadLayer = lazy(() => import('./RoadLayer').then((module) => ({ default: module.RoadLayer })))
+const LazyBridgeLayer = lazy(() => import('./BridgeLayer').then((module) => ({ default: module.BridgeLayer })))
+const LazyClosestTrioBridgeLayer = lazy(() => import('./ClosestTrioBridgeLayer').then((module) => ({ default: module.ClosestTrioBridgeLayer })))
+const LazyClosestTrioRoadLayer = lazy(() => import('./ClosestTrioRoadLayer').then((module) => ({ default: module.ClosestTrioRoadLayer })))
 
 function LayerLoadingFallback({ label }: { label: string }) {
   return (
@@ -64,6 +70,35 @@ function RoadPane() {
   return null
 }
 
+
+function LayerPanes() {
+  const map = useMap()
+
+  useEffect(() => {
+    if (!map.getPane('circle3km-pane')) {
+      const circlePane = map.createPane('circle3km-pane')
+      circlePane.style.zIndex = '390'
+    }
+
+    if (!map.getPane('bridge-pane')) {
+      const bridgePane = map.createPane('bridge-pane')
+      bridgePane.style.zIndex = '410'
+    }
+
+    if (!map.getPane('bridge-trio-pane')) {
+      const bridgeTrioPane = map.createPane('bridge-trio-pane')
+      bridgeTrioPane.style.zIndex = '420'
+    }
+
+    if (!map.getPane('bridge-trio-road-pane')) {
+      const bridgeTrioRoadPane = map.createPane('bridge-trio-road-pane')
+      bridgeTrioRoadPane.style.zIndex = '455'
+    }
+  }, [map])
+
+  return null
+}
+
 function toPopupLiveData(station: StationGeo, liveData: ReturnType<typeof useLiveAqi>['data']): WaqiLiveStationData | null {
   if (!liveData || liveData.aqi === null) {
     return null
@@ -77,6 +112,8 @@ function toPopupLiveData(station: StationGeo, liveData: ReturnType<typeof useLiv
     dominantPollutant: liveData.dominantPollutant,
     updatedAt: liveData.updatedAt,
     pollutants: liveData.pollutants,
+    nearbySensor: liveData.nearbySensor,
+    cpcbStation: liveData.cpcbStation,
     raw: liveData.raw ?? {
       aqi: liveData.aqi,
       idx: liveData.stationUid ?? undefined,
@@ -164,33 +201,42 @@ function StationOverlay({
   registerMarker: (stationId: string, marker: StationMarkerRef | null) => void
   registerCoverageSummary: (stationId: string, stationSummary: CoverageStationSummary | null) => void
 }) {
-  const { selectedStationId, setSelectedStationId, coverageMode } = useStationContext()
+  const { selectedStationId, setSelectedStationId, mode, dateRange, coverageMode } = useStationContext()
   const { data: liveData, loading: liveLoading, error: liveError, stale: liveStale } = useLiveAqi(station.station_id, true)
+  const { data: historicalData } = useStationHistory(mode === 'Historical' ? station.station_id : null)
   const lastKnownLiveSummaryRef = useRef<AqiSummary | null>(null)
 
   const popupLiveData = useMemo(() => toPopupLiveData(station, liveData), [station, liveData])
 
-  const summary = useMemo(() => {
+  const liveSummary = useMemo(() => {
     return popupLiveData ? getLiveWaqiSummary(popupLiveData) : null
   }, [popupLiveData])
 
-  useEffect(() => {
-    if (summary) {
-      lastKnownLiveSummaryRef.current = summary
-    }
-  }, [summary])
+  const historicalSummary = useMemo(() => {
+    return historicalData ? getStationAqiSummary(historicalData.records, 'Historical', dateRange) : null
+  }, [dateRange, historicalData])
 
-  const coverageSummary = summary ?? lastKnownLiveSummaryRef.current
-  const coverageIsStale = liveStale || (!summary && Boolean(lastKnownLiveSummaryRef.current))
+  useEffect(() => {
+    if (liveSummary) {
+      lastKnownLiveSummaryRef.current = liveSummary
+    }
+  }, [liveSummary])
+
+  // 12.7.3/12.7.4: Live-mode coverage summaries and Historical date-range summaries both keep feeding the memoized color map, so the bridge and 3 km fills repaint with fresh AQI values.
+  const coverageSummary =
+    mode === 'Historical' ? historicalSummary : liveSummary ?? lastKnownLiveSummaryRef.current
+  const coverageIsStale =
+    mode === 'Live' && (liveStale || (!liveSummary && Boolean(lastKnownLiveSummaryRef.current)))
 
   const isSelected = selectedStationId === station.station_id
+  const isLiveMode = mode === 'Live'
   const circleColor = coverageSummary ? getAqiColor(coverageSummary.value) : '#94a3b8'
   const circleStyle = {
     color: circleColor,
     fillColor: circleColor,
-    fillOpacity: isSelected ? (coverageIsStale ? 0.18 : 0.3) : coverageIsStale ? 0.14 : 0.24,
-    weight: isSelected ? 4 : 2.5,
-    opacity: coverageIsStale ? 0.68 : 0.95,
+    fillOpacity: isSelected ? (coverageIsStale ? 0.2 : 0.34) : coverageIsStale ? 0.16 : 0.26,
+    weight: isSelected ? (isLiveMode ? 5 : 4) : isLiveMode ? 3.75 : 2.5,
+    opacity: coverageIsStale ? 0.75 : isLiveMode ? 1 : 0.95,
     dashArray: coverageIsStale ? '4 8' : '6 8',
   }
   const popupLoading = liveLoading
@@ -245,6 +291,7 @@ function StationOverlay({
             liveLoading={popupLoading}
             liveError={popupError}
             liveStale={liveStale}
+            historicalSummary={mode === 'Historical' ? historicalSummary : undefined}
           />
         </LeafletPopup>
       </LeafletMarker>
@@ -266,12 +313,13 @@ export function AqiMap() {
   const [stations, setStations] = useState<StationGeo[]>([])
   const [showVoronoi, setShowVoronoi] = useState(true)
   const [showRoadNetwork, setShowRoadNetwork] = useState(false)
-  const { coverageMode } = useStationContext()
+  const { mode, coverageMode, showCircle3km, showBridgePolygons, selectedTrioStations } = useStationContext()
   const { data: roadNetwork, status: roadNetworkStatus } = useRoadNetworkPayload(null, showRoadNetwork)
   const markerRefs = useRef<Map<string, StationMarkerRef | null>>(new Map())
   const stationColorMapRecomputeCount = useRef(0)
   const [coverageSummaries, setCoverageSummaries] = useState<Record<string, CoverageStationSummary>>({})
 
+  // 12.7.1: this memoized station_id -> color map feeds both the circle layers and the bridge borders, and it is passed read-only into the trio bridge layer too.
   const stationColorMap = useMemo(() => {
     return Object.values(coverageSummaries).reduce<Record<string, string>>((lookup, stationSummary) => {
       lookup[stationSummary.station.station_id] = getAqiColor(stationSummary.summary.value)
@@ -315,7 +363,7 @@ export function AqiMap() {
   useEffect(() => {
     let active = true
 
-    fetch('/data/station_master.json')
+    fetch(resolveAppUrl('/data/station_master.json'))
       .then((response) => response.json() as Promise<StationGeo[]>)
       .then((data) => {
         if (active) {
@@ -354,10 +402,8 @@ export function AqiMap() {
     <section className="min-w-0 rounded-3xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-200/60 backdrop-blur sm:p-6">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-600">
-            Phase 3.4
-          </p>
-          <h2 className="mt-1 text-xl font-semibold text-slate-900">Kolkata AQI Map</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Station map</h2>
+          <p className="mt-0.5 text-xs text-slate-500">Tap a marker for its reading. Shaded zones show each station's nearest-coverage area.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -366,7 +412,7 @@ export function AqiMap() {
             disabled={false}
             className="inline-flex max-w-full items-center rounded-full border border-sky-200 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-50 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 disabled:hover:bg-transparent"
           >
-            {showVoronoi ? 'Hide Voronoi' : 'Show Voronoi'}
+            {showVoronoi ? 'Hide zones' : 'Show zones'}
           </button>
           <button
             type="button"
@@ -402,10 +448,17 @@ export function AqiMap() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <RoadPane />
+          <LayerPanes />
           <MapSelectionFollower stations={stations} markerRefs={markerRefs} />
           <Suspense fallback={<LayerLoadingFallback label="Coverage" />}>
             {coverageMode === 'voronoi' ? (
-              <CoverageLayer visible={showVoronoi} stationColorMap={stationColorMap} stationSummaries={coverageSummaries} />
+              <CoverageLayer
+                visible={showVoronoi}
+                mode={mode}
+                roadNetworkVisible={showRoadNetwork}
+                stationColorMap={stationColorMap}
+                stationSummaries={coverageSummaries}
+              />
             ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="Roads" />}>
@@ -413,9 +466,48 @@ export function AqiMap() {
               <LazyRoadLayer visible={showRoadNetwork} stationColorMap={stationColorMap} stationSummaries={coverageSummaries} />
             ) : null}
           </Suspense>
+          <Suspense fallback={<LayerLoadingFallback label="3km circles" />}>
+            <LazyCircle3kmLayer visible={showCircle3km} stationColorMap={stationColorMap} pane="circle3km-pane" />
+          </Suspense>
+          <Suspense fallback={<LayerLoadingFallback label="Bridge polygons" />}>
+            <LazyBridgeLayer visible={showBridgePolygons} stationColorMap={stationColorMap} pane="bridge-pane" />
+          </Suspense>
+          <Suspense fallback={<LayerLoadingFallback label="3-station roads" />}>
+            <LazyClosestTrioRoadLayer
+              visible={selectedTrioStations.size > 0}
+              selectedStationIds={selectedTrioStations}
+              stationColorMap={stationColorMap}
+              stationSummaries={coverageSummaries}
+              pane="bridge-trio-road-pane"
+            />
+          </Suspense>
+          <Suspense fallback={<LayerLoadingFallback label="3-station bridges" />}>
+            <LazyClosestTrioBridgeLayer
+              visible={selectedTrioStations.size > 0}
+              selectedStationIds={selectedTrioStations}
+              stationColorMap={stationColorMap}
+              stationSummaries={coverageSummaries}
+              pane="bridge-trio-pane"
+            />
+          </Suspense>
           {stationOverlays}
         </LeafletMapContainer>
       </div>
     </section>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
