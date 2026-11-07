@@ -5,6 +5,8 @@ import { useStationHistory } from '../hooks/useStationHistory'
 import { useStationContext, type DateRange } from '../context/StationContext'
 import { getAqiColor, getHistoricalRangeAqi } from '../utils/aqi'
 import { AnimatedNumber } from './AnimatedNumber'
+import { useStationWeather } from '../hooks/useStationWeather'
+import { formatTemperature } from '../utils/weather'
 import { getLiveWaqiSummary, type WaqiLiveStationData } from '../utils/waqi'
 
 type StationGeo = {
@@ -141,6 +143,8 @@ function ComparisonRow({
   )
   const { data: historyData, status: historyStatus } = useStationHistory(isHistorical ? station.station_id : null)
   const popupLiveData = useMemo(() => toPopupLiveData(station, liveData), [station, liveData])
+  // Current weather only makes sense next to live readings.
+  const weather = useStationWeather(station.station_id, !isHistorical)
 
   const historicalMetric = useMemo<MetricState | null>(() => {
     if (!isHistorical) {
@@ -214,7 +218,15 @@ function ComparisonRow({
     >
       <td className="py-3 pr-3 pl-1 align-middle">
         <p className={`truncate text-sm ${selected ? 'font-semibold text-slate-950' : 'text-slate-800'}`}>{station.station_name}</p>
-        <p className="mt-0.5 truncate text-[11px] text-slate-400">{metric.shortLabel}</p>
+        <p className="mt-0.5 truncate text-[11px] text-slate-400">
+          {metric.shortLabel}
+          {weather ? (
+            <span className="text-slate-500">
+              {' · '}
+              {formatTemperature(weather.temperature)} · {Math.round(weather.humidity)}%
+            </span>
+          ) : null}
+        </p>
       </td>
       <td className="w-[46%] py-3 pr-1 align-middle sm:w-[55%]">
         {metric.status === 'ready' && metric.value !== null ? (

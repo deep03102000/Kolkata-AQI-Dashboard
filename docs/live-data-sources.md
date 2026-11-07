@@ -64,3 +64,12 @@ The proxy routes only allow `feed/@<uid>` and `map/bounds/?latlng=…&networks=a
 ## Faster data
 
 CPCB's CCR dashboard (airquality.cpcb.gov.in) shows raw 15-minute readings, but it has no public API, and those readings are unvalidated rather than the official AQI. The way to get them is to ask CPCB or WBPCB for access; the dashboard does not scrape the site.
+
+## Temperature and humidity
+
+CPCB's data.gov.in feed has no weather fields, and the stations' own temperature and humidity sensors are only shown on CPCB's CCR dashboard, which has no API. The dashboard therefore shows **model estimates for each station's location** from [Open-Meteo](https://open-meteo.com/) (free, no key, CC BY 4.0, credited in the legend):
+
+- **Request:** one browser request for all six stations, `GET https://api.open-meteo.com/v1/forecast?latitude=…&longitude=…&current=temperature_2m,relative_humidity_2m,apparent_temperature&timezone=Asia/Kolkata`, with comma-separated coordinates. It is CORS-enabled, so no server route is needed.
+- **Freshness:** Open-Meteo updates every 15 minutes; the dashboard refreshes every 10.
+- **Where it shows:** the live station card (temperature, feels-like, humidity), each comparison-table row and the map popups. Live mode only.
+- **Code:** `aqi-dashboard/src/utils/weather.ts` and `aqi-dashboard/src/hooks/useStationWeather.ts`.

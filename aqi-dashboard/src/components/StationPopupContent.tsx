@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 import { useStationContext } from '../context/StationContext'
 import { formatWaqiTimestamp, getLiveWaqiSummary, type WaqiLiveStationData } from '../utils/waqi'
 import type { AqiSummary } from '../utils/aqi'
+import { useStationWeather } from '../hooks/useStationWeather'
+import { formatTemperature } from '../utils/weather'
 
 type StationIdentity = {
   station_id: string
@@ -74,6 +76,7 @@ export function StationPopupContent({
   const isSelected = selectedStationId === station.station_id
   const liveUpdatedAt = liveData?.updatedAt ?? null
   const isHistorical = historicalSummary !== undefined
+  const weather = useStationWeather(station.station_id, !isHistorical)
 
   const header = (
     <p className={`text-sm leading-5 text-slate-900 ${isSelected ? 'font-semibold' : 'font-medium'}`}>{station.station_name}</p>
@@ -129,6 +132,11 @@ export function StationPopupContent({
             {liveStale ? <span className="font-medium text-amber-700"> · stale</span> : null}
           </>,
         )
+      ) : null}
+      {weather ? (
+        <p className="text-[11px] text-slate-600">
+          {formatTemperature(weather.temperature)} · {Math.round(weather.humidity)}% humidity
+        </p>
       ) : null}
     </div>
   )

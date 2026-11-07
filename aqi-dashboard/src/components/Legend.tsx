@@ -34,6 +34,16 @@ export function Legend() {
           <dd>Used only when a station's own feed is offline; the sensor is named.</dd>
         </div>
         <div className="flex gap-2">
+          <dt className="w-24 shrink-0 font-medium text-slate-700">Weather</dt>
+          <dd>
+            Temperature and humidity are 15-minute model estimates for each station's location from{' '}
+            <a href="https://open-meteo.com/" target="_blank" rel="noreferrer" className="underline decoration-slate-300 underline-offset-2 hover:text-slate-700">
+              Open-Meteo
+            </a>
+            , not the station's own sensors.
+          </dd>
+        </div>
+        <div className="flex gap-2">
           <dt className="w-24 shrink-0 font-medium text-slate-700">Zones</dt>
           <dd>Each shaded area is closest to the station inside it.</dd>
         </div>

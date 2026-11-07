@@ -275,7 +275,7 @@ export function StationSidebar() {
             ) : liveStatus === 'error' || !liveData ? (
               <p className="text-sm text-rose-600">Live AQI could not be loaded for this station.</p>
             ) : (
-              <LiveStationCard liveData={liveData} stale={liveStale} />
+              <LiveStationCard stationId={selectedStation.station_id} liveData={liveData} stale={liveStale} />
             )}
           </div>
         )}
