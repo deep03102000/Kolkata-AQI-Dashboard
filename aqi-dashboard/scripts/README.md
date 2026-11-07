@@ -33,5 +33,10 @@ Run them with npm scripts:
 - `npm run validate:geojson` for validating the final public Voronoi export on demand
 - `npm run road:validate-export` for validating the exported road GeoJSON structure on demand
 - `npm run road:check-size` for sanity-checking the published road file against the size budget and splitting it into per-station files if needed
+- `npm run bridge:circles`, `bridge:pairs`, `bridge:polygons` and `bridge:verify` for the 3 km circles and station-pair bridge polygons
+- `npm run bridge:trio:pairs` and `bridge:trio:polygons` for the three-station (Jadavpur, Rabindra Sarobar, Ballygunge) bridge overlay
+- `npm run waqi:snapshot` (`scripts/fetch-waqi-snapshot.mjs`) for refreshing `public/data/waqi_last_updated_stations.json`. It runs automatically before `dev`, `build` and `preview`, and the file is not committed.
+
+Live CPCB data is not produced by a script: it is fetched at runtime by `shared/cpcbFeed.mjs` (see `docs/live-data-sources.md`).
 
 

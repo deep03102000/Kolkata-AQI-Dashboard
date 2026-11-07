@@ -38,6 +38,9 @@
 - [Phase 12.9 Dedicated Three-Station Bridge Overlay](./phase-12-9-dedicated-three-station-bridge-overlay.md)
 - [Phase 12.10 Trio Road Coloring](./phase-12-10-trio-road-coloring.md)
 - [Phase 12.11 Trio Selector Interaction Notes](./phase-12-11-trio-selector-interaction.md)
+- [Phase 13 Reliable Live AQI from CPCB](./phase-13-cpcb-live-data.md)
+- [Phase 14 Simpler UI, Historical Comparison and Lighter Loading](./phase-14-ui-and-performance.md)
+- [Phase 15 Temperature and Humidity](./phase-15-station-weather.md)
 
 ## Configuration
 - [Config Examples](./config_examples.md)
@@ -45,8 +48,9 @@
 
 ## Notes
 
-- The documentation is organized by implementation phase, with spatial tooling notes in Phases 8 through 12.
-- The current app supports static history, live AQI from CPCB's official station feed with WAQI and nearest-sensor fallbacks ([Live Data Sources](./live-data-sources.md)), Voronoi coverage, road overlays, and stale-data visual cues when live readings are reused.
+- The documentation is organized by implementation phase: spatial tooling in Phases 8–12, live data and the interface in Phases 13–15.
+- The current app supports static history with date-range comparison, live AQI from CPCB's official station feed with WAQI and nearest-sensor fallbacks ([Live Data Sources](./live-data-sources.md)), temperature and humidity estimates, Voronoi coverage, road and bridge overlays, and stale-data cues.
+- The [mini project seminar report](./mini_project_seminar_report.md) is the source for `Kolkata_AQI_Mini_Project_Seminar_Report.docx` (rebuild with `python build_mini_project_seminar_report.py`).
 
 
 

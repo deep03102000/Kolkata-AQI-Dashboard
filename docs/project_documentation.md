@@ -1,145 +1,100 @@
 # Project Documentation
 
 ## Overview
-Kolkata AQI Dashboard is a lightweight, static-first air quality project for six Kolkata monitoring stations. The repository combines a one-time data preparation pipeline with a React + Vite frontend that loads compact station JSON on demand and presents the data in an interactive map-and-chart experience.
+Kolkata AQI Dashboard is a lightweight, static-first air quality dashboard for six CPCB monitoring stations in Kolkata. A one-time data pipeline turns raw station workbooks into compact files, and a React + Vite frontend presents them on an interactive map with charts and comparisons.
 
-The project was built to stay simple to run and easy to inspect. Instead of introducing a database or a custom backend for the historical data, the station records are prepared ahead of time, exported as static files, and consumed directly by the frontend. Live AQI comes from CPCB's official real-time station feed on data.gov.in through a small server route (`/api/cpcb`), with WAQI as a fallback, so API keys never reach the browser.
+Historical data (2024–2025, 15-minute readings) is served as static files, with no database. Live AQI comes from CPCB's official real-time station feed on data.gov.in through a small server route (`/api/cpcb`), with WAQI as a fallback, so API keys never reach the browser. Current temperature and humidity come from Open-Meteo.
 
-## What The Project Does
-
-The project takes raw station workbooks and turns them into a usable dashboard that shows:
-
-- a Kolkata-centered Leaflet map
-- six station markers and 1 km AQI circles
-- coverage overlays and station-colored road overlays
-- dedicated trio bridge and trio road overlays with a sidebar trio selector
-- popups with live or historical AQI values
-- a selected-station sidebar with summary values
-- a lazy-loaded historical chart panel
-- a comparison table for the six stations
-- date-range filtering for historical views
-- filtered AQI summary stats above the chart
-- live AQI from official CPCB station readings, falling back to WAQI and then the nearest live sensor
-- visible stale-data cues when live values fall back to the last known reading
+## What The Dashboard Shows
+- A Kolkata map with the six stations, nearest-station coverage zones and optional overlays: roads, 3 km circles, station-pair bridges, and three-station bridges and roads.
+- **Live mode:**
+  - each station's official CPCB AQI, updated hourly, with the category and the pollutant sub-indices;
+  - temperature and humidity estimates for each station's location;
+  - the source of every reading, with a clearly labelled fallback if a station's feed goes offline.
+- **Historical mode:**
+  - the average AQI for any date range between 2024-01-01 and 2025-12-31;
+  - a pollutant trend chart and average, maximum and minimum AQI.
+- A comparison table ranking all six stations, live or historical.
+- A legend with the CPCB colour bands and notes on each data source.
 
 ## Repository Structure
-
-- `Dataset/` contains the data cleaning, validation, and export notes plus the generated CSV/JSON artifacts.
-- `aqi-dashboard/` contains the React + Vite frontend.
-- `docs/` contains project-wide documentation, architecture notes, references, and research material.
-- `README.md` gives the top-level overview and quick start instructions.
+- `Dataset/` contains the data cleaning, validation and export scripts and notes, plus the generated CSV/JSON artifacts.
+- `aqi-dashboard/` is the frontend:
+  - `src/` is the React app;
+  - `public/data/` holds the static data;
+  - `scripts/` holds the build-time geometry tooling;
+  - `shared/` holds server-side code for `/api/cpcb`;
+  - `server.mjs` is the Render server, and `netlify/functions/` holds the Netlify functions.
+- `docs/` contains project documentation, architecture notes, phase notes and the seminar report source.
+- `README.md` gives the overview and quick start, and `DEPLOYMENT.md` covers hosting.
 
 ## Data Preparation Pipeline
-
-The data pipeline is organized into a sequence of phases:
-
-1. Raw Excel files are inspected for headers, dates, units, and missing values.
+1. Raw Excel files are inspected for headers, dates, units and missing values.
 2. Missing values are cleaned using interpolation and related fill strategies where appropriate.
 3. The cleaned data is standardized to the dashboard schema: `date, pm25, pm10, no2, so2, co, o3, nh3`.
 4. A `station_name` column is added and the six station tables are merged into a master long-format table.
 5. The stations are geocoded and combined into a station master table with stable IDs.
 6. The AQI rows are linked to station IDs and coordinates.
-7. Voronoi coverage, road network, and trio overlay artifacts are generated as build-time geometry outputs.
-8. Final station payloads, coverage files, road files, and trio overlay files are exported as static JSON/GeoJSON files under `aqi-dashboard/public/data/`.
-9. Live AQI is layered on top: CPCB's real-time feed first (via `/api/cpcb`), then WAQI by station UID, then the nearest live WAQI sensor. See [Live Data Sources](./live-data-sources.md).
+7. Voronoi coverage, road network and bridge/trio overlay artifacts are generated as build-time geometry outputs.
+8. Station payloads and overlay files are exported as static JSON/GeoJSON under `aqi-dashboard/public/data/`.
 
-This means the frontend can work entirely from static data files without a live API, while still leaving room for a live-data layer when it is available.
+## Live Data
+Live AQI is layered on top of the static data, in this order:
+
+1. **CPCB's real-time feed** on data.gov.in (via `/api/cpcb`). It is official and hourly, published about 30–40 minutes after each hour.
+2. **WAQI's copy of the station**, if CPCB's reading is more than 6 hours old.
+3. **The nearest live WAQI sensor** within 5 km, named in the UI.
+4. **The newest stale official reading**, marked "Stale".
+
+The CPCB values are AQI sub-indices, so a station's AQI is its highest one. Full details are in [Live Data Sources](./live-data-sources.md) and [Phase 13](./phase-13-cpcb-live-data.md). Weather is described in [Phase 15](./phase-15-station-weather.md).
 
 ## Frontend Architecture
+React 19 with Vite, TypeScript and Tailwind CSS 4. Core libraries: `leaflet`, `react-leaflet`, `chart.js`, `react-chartjs-2`. Motion is CSS-only.
 
-The frontend is a React 19 application scaffolded with Vite and TypeScript. Tailwind CSS handles the styling and keeps the component code compact.
+Main modules:
 
-Core frontend dependencies:
-
-- `react`
-- `react-dom`
-- `leaflet`
-- `react-leaflet`
-- `chart.js`
-- `react-chartjs-2`
-
-The app is organized around a small number of focused modules:
-
-- `StationContext` stores the selected station, mode, coverage mode, trio station set, and date range.
-- `AqiMap` renders the map, markers, circles, coverage layer, road layer, trio overlays, and popups.
-- `StationSidebar` renders the selected station summary, filters, mode controls, and trio selector.
-- `ComparisonTable` compares all six stations in live or historical mode.
-- `SelectedStationChartPanel` and `ChartPanel` render the historical chart experience.
-- `useStationHistory` fetches and caches station JSON on demand.
-- `useLiveAqi` resolves live values (CPCB first, then WAQI, then the nearest sensor), caches them locally, and exposes stale state.
-- `useWaqiLiveStation` adapts the live payload from any source for station UI components.
-- `usePrefetchWaqiLiveStations` primes the live station cache for the map and sidebar.
-- `ControlBar` is the sticky top bar with the Live/Historical toggle, station picker, date inputs and range presets.
-- `SummaryStats` computes average, max, and min AQI for the filtered range.
+- **Shared state:** `StationContext` stores the selected station, mode, date range, coverage mode, overlay toggles and trio selection.
+- **Controls:** `ControlBar` is the bar at the top of the screen with the Live/Historical toggle, station picker, dates and range presets.
+- **Map:** `AqiMap` renders the map, markers, popups (`StationPopupContent`) and overlay layers. Optional layers mount only once switched on.
+- **Station panel:** `StationSidebar` shows the station list with AQI chips, the selected-station card (`LiveStationCard` with `LivePollutantGrid`, or the date-range average) and the map-layer controls (`TrioStationSelector`).
+- **Chart:** `SelectedStationChartPanel` and the lazy `ChartPanel` render the pollutant trend; `SummaryStats` shows average, maximum and minimum AQI.
+- **Table:** `ComparisonTable` ranks all six stations.
+- **Shared visuals:** `Legend` explains the colours and sources; `AnimatedNumber` counts values up to new readings.
+- **Data hooks:**
+  - `useLiveAqi`, `useWaqiLiveStation` and `usePrefetchWaqiLiveStations` for live AQI;
+  - `useStationHistory` for history files;
+  - `useStationWeather` for weather.
 
 ## State Flow
-
-The dashboard uses shared React context so the map, sidebar, comparison table, and chart always agree on the current selection.
-
-- Clicking a marker updates `selectedStationId`.
-- The sidebar loads the matching station payload.
-- The trio selector updates an independent trio-station set without affecting the main coverage toggle.
-- The historical chart reads the same payload and filters it by date range.
-- The comparison table recomputes AQI values for all stations when the mode changes.
-- The summary stats use the same filtered records as the chart.
-- Live mode shows the official CPCB reading for each station and names the source when a fallback is used.
-- When live data falls back to a cached reading, the map and popup styling keep it visible but mark it as stale.
-
-This keeps the UI consistent without introducing a heavier global state library.
+- Selecting a station on the map, in the list, in the table or in the picker updates `selectedStationId`, and every view follows.
+- Switching to Historical selects the last 30 days of data if no dates are set. The table, station list, sidebar card and popups then show date-range averages, and live polling pauses.
+- The chart reads the selected station's history and filters it by date range. In Live mode it shows the last recorded day.
+- The trio selector updates an independent set, so it never changes the main coverage settings.
+- Stale live readings stay visible but are marked, and map colours keep the last known value.
 
 ## Performance Choices
-
-Several small design choices keep the dashboard light:
-
-- Leaflet and chart code are split into separate bundles.
-- The coverage, road, and trio overlay layers are lazy-loaded.
-- The chart panel is loaded with `React.lazy` and `Suspense`.
-- Station history is cached in memory once fetched.
-- Live readings are cached in memory and IndexedDB. The CPCB feed is cached for 5 minutes on the server.
-- Historical filtering is done client-side with array filtering.
-- The chart uses one multi-series line plot instead of several separate chart instances.
+- **Bundles:** Leaflet and chart code are split into separate bundles, and the chart panel is lazy-loaded.
+- **Optional layers:** they mount only after first being switched on, so the road network (about 16 MB raw) loads on demand.
+- **History files:** they load only when needed. The live view no longer downloads them, which took first open from about 70 MB to 7 MB in development mode.
+- **CPCB data:** the server caches it (5 minutes, or 1 minute when a new reading is due), and reloads answer from cache when no newer reading can exist yet.
+- **Caching and filtering:** live readings are cached in memory and IndexedDB, and Historical filtering runs client-side.
 
 ## How To Run
-
 ```bash
 cd aqi-dashboard
 npm install
 npm run dev
 ```
 
-Useful companion commands:
+For official live AQI, put a free data.gov.in key in `aqi-dashboard/.env.local` as `DATA_GOV_IN_API_KEY=...`. Without it the dashboard still works, using the WAQI fallbacks. See [Config Examples](./config_examples.md).
+
+Other commands:
 
 ```bash
 cd aqi-dashboard
-npm run build
-cd aqi-dashboard
-npm run preview
+npm run build     # type-check and production build
+npm run preview   # serve the production build locally
 ```
 
-## Current Feature Set
-
-The dashboard currently supports:
-
-- station selection on the map
-- live and historical AQI summaries
-- AQI circles colored by category
-- Voronoi coverage overlays
-- station-colored road overlays
-- dedicated trio bridge and road overlays
-- a trio selector with live AQI swatches
-- a persistent legend
-- a comparison table across all stations
-- a date range picker built with native date inputs
-- toggleable pollutant series in the historical chart
-- filtered summary stats for the selected range
-- official CPCB live readings with WAQI and nearest-sensor fallbacks
-- cached-live freshness badges and muted stale styling in coverage, roads, trio overlays, and popups
-
 ## Documentation Style
-
-The `docs/` folder is meant to be a working reference for the project, not a marketing site. It should stay close to the implemented behavior and track the actual codebase as it evolves.
-
-## Live Data
-
-Phase 5 introduced the WAQI live-data path (token handling, response shape, station UID mapping and the proxy). Live AQI now comes first from CPCB's official feed, and WAQI is the fallback. See [Live Data Sources](./live-data-sources.md).
-
+The `docs/` folder is a working reference for the project. It should stay close to the implemented behaviour and track the codebase as it changes. Phase notes record each step as it was built; the guides (this file, the architecture and the reference) describe the current state.

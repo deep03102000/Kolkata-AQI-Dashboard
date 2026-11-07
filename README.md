@@ -7,17 +7,17 @@ A lightweight React + Vite dashboard for six Kolkata air-quality stations. The r
 - Prepares cleaned, standardized station CSV and JSON artifacts from the raw workbooks.
 - Builds build-time geometry artifacts for pairwise distances, Voronoi coverage, and road assignment.
 - Renders a Leaflet map with station markers, AQI circles, coverage cells, road overlays, trio-specific bridge/road overlays, and popups.
-- Shows a selected-station sidebar with live or historical AQI summaries plus a trio selector for the dedicated three-station overlay.
-- Loads historical charts, comparison views, and summary stats on demand.
+- Shows a station panel with every station's AQI, the selected station's live reading (AQI scale, pollutants, temperature and humidity) or date-range average, and map-layer controls.
+- Compares all six stations live or as averages over any date range in 2024–2025, with a pollutant chart and summary stats.
+- Keeps the first load light: history files and optional map layers download only when needed.
 - Shows live AQI from the six stations' official CPCB readings (data.gov.in, hourly), falling back to WAQI and then the nearest live sensor, and always naming the source.
-- Surfaces live-data freshness with cached-live badges and muted styling when values fall back to the last known reading.
+- Marks stale readings clearly instead of presenting them as fresh.
 
 ## Project Layout
 
 - `Dataset/` contains the cleaning, geocoding, and export notes plus generated data files.
-- `aqi-dashboard/` contains the React + Vite frontend.
-- `docs/` contains the architecture notes, config examples, research notes, and phase documentation.
-- `aqi-dashboard/scripts/` is reserved for build-time-only geometry and preprocessing tools.
+- `aqi-dashboard/` contains the React + Vite frontend (`src/`), static data (`public/data/`), the server code for `/api/cpcb` (`shared/`, `server.mjs`, `netlify/functions/`) and build-time geometry tools (`scripts/`).
+- `docs/` contains the architecture notes, config examples, research notes, phase documentation and the seminar report source.
 
 ## Quick Start
 
@@ -55,7 +55,7 @@ npm run preview
 
 ## Live AQI Setup
 
-See [docs/live-data-sources.md](docs/live-data-sources.md) for the full source order and data format.
+See [docs/live-data-sources.md](docs/live-data-sources.md) for the full source order and data format. Temperature and humidity come from Open-Meteo and need no configuration.
 
 - `DATA_GOV_IN_API_KEY` (server only): a free key from data.gov.in → My Account. It enables official CPCB readings. Put it in `aqi-dashboard/.env.local` for local development and in the Render or Netlify environment for deployment.
 - `WAQI_API_TOKEN` (server only) and `VITE_WAQI_PROXY_URL=/api/waqi` on Render: these enable the WAQI fallback.
@@ -64,26 +64,30 @@ See [docs/live-data-sources.md](docs/live-data-sources.md) for the full source o
 
 ## Current Features
 
-- Station selection on the map and in the sidebar
-- Live and historical AQI summaries
-- AQI circles colored by category
-- Voronoi coverage overlays
-- Station-colored road overlays
-- Dedicated trio bridge and road overlays with a sidebar selector
-- A comparison table for all six stations
-- Lazy-loaded historical charting
-- Sticky control bar with Live/Historical toggle, station picker, date range and presets
-- Comparison table, sidebar and popups that show date-range averages in Historical mode
-- Toggleable pollutant series in the chart
-- Filtered summary stats for the selected range
-- Official CPCB live readings with WAQI and nearest-sensor fallbacks
-- Cached-live freshness badges and muted stale styling in coverage, roads, trio overlays, and popups
+- Control bar at the top of the screen with Live/Historical toggle, station picker, date range and presets
+- Station selection from the map, station list, comparison table or picker
+- Official CPCB live readings with WAQI and nearest-sensor fallbacks, and the next expected update time
+- Temperature and humidity estimates for each station (Open-Meteo, no key needed)
+- Historical date-range averages in the comparison table, station list, sidebar and popups
+- Lazy-loaded pollutant chart with toggleable series and average/max/min AQI
+- Nearest-station coverage zones, station-coloured roads, 3 km circles, station-pair bridges and the three-station bridge overlay
+- A comparison table ranking all six stations
+- Minimal, phone-friendly design with subtle CSS motion that respects reduced-motion settings
+- Clear stale-data styling in coverage, roads, overlays and popups
+
+## Documentation
+
+- [Docs index](docs/index.md)
+- [Architecture](docs/architecture.md) and [project documentation](docs/project_documentation.md)
+- [Live data sources](docs/live-data-sources.md)
+- [Reference](docs/reference.md): files, commands and external services
+- [Deployment](DEPLOYMENT.md)
 
 ## Notes
 
-- The map, sidebar, chart, coverage layer, road layer, trio overlay layers, and comparison table share the same React context so selection stays in sync.
-- Leaflet and chart code are split into separate chunks to keep the initial load smaller.
-- Historical chart data is filtered client-side from the already fetched JSON.
+- The map, station panel, chart, overlays and comparison table share one React context, so selection stays in sync.
+- Leaflet and chart code are split into separate chunks, and optional map layers and history files load only when needed.
+- Historical data is filtered client-side from the fetched JSON.
 
 
 

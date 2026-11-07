@@ -1,6 +1,6 @@
 # Phase Implementation Summary
 
-This file gives a single, high-level view of how the project evolved from raw AQI files to the current dashboard with optional live WAQI support.
+This file gives a single, high-level view of how the project evolved from raw AQI files to the current dashboard with official CPCB live AQI, historical comparison and station weather.
 
 ## Phase 1: Data Preparation
 
@@ -157,22 +157,64 @@ Key implementation:
 Outcome:
 
 - The dashboard now supports a dedicated three-station overlay workflow without disturbing the original coverage, road, or general bridge features.
+
+## Phase 13: Reliable Live AQI from CPCB
+
+Key implementation:
+
+- Found and removed WAQI's coordinate lookup, which returned Lhasa's AQI for every Kolkata station.
+- Confirmed WAQI's copies of all six stations had been frozen since 2026-06-23.
+- Added CPCB's official real-time feed on data.gov.in as the primary source, served by `/api/cpcb` from the dev server, Render and Netlify.
+- Verified the live record format (`avg_value` fields, values as AQI sub-indices).
+- Added a nearest-live-sensor fallback and source labels on every reading.
+- Tuned caching so reloads are fast and new hourly readings appear within minutes of publication.
+
+Outcome:
+
+- All six stations show official, current CPCB AQI, with labelled fallbacks if a feed goes offline.
+
+See [Phase 13](./phase-13-cpcb-live-data.md).
+
+## Phase 14: Simpler UI, Historical Comparison and Lighter Loading
+
+Key implementation:
+
+- Added a control bar at the top of the screen with the Live/Historical toggle, station picker, dates and presets.
+- Made the comparison table, station list, sidebar and popups show date-range averages in Historical mode.
+- Restyled the dashboard as flat and minimal, with CSS-only motion that respects reduced-motion settings.
+- Stopped loading history files and optional map layers until they are needed.
+
+Outcome:
+
+- The dashboard is easier to use on phones, and first open dropped from about 70 MB to 7 MB in development mode.
+
+See [Phase 14](./phase-14-ui-and-performance.md).
+
+## Phase 15: Temperature and Humidity
+
+Key implementation:
+
+- Added current temperature, "feels like" and humidity for each station from Open-Meteo, in one request refreshed every 10 minutes.
+- Labelled the values as location estimates and credited Open-Meteo in the legend.
+
+Outcome:
+
+- Live views show weather next to AQI without any extra keys or server routes.
+
+See [Phase 15](./phase-15-station-weather.md).
+
 ## Current State
 
 The project now combines:
 
-- a static, inspectable AQI dataset pipeline
-- a React + Vite map dashboard
-- lazy historical charts and summary stats
-- optional live WAQI support through a proxy-safe deployment flow
-- coverage and road overlays built from phase outputs
-- explicit stale-data visuals when live values fall back to cached readings
+- a static, inspectable AQI dataset pipeline (2024–2025, 15-minute readings)
+- a React + Vite map dashboard with a control bar, station panel, chart and comparison table
+- official CPCB live AQI via `/api/cpcb`, with WAQI and nearest-sensor fallbacks and a source label on every reading
+- Historical mode with date-range averages across every view
+- temperature and humidity estimates from Open-Meteo
+- coverage, road, bridge and trio overlays built from phase outputs and loaded on demand
+- explicit stale-data visuals when live values are old
+- a minimal, phone-friendly interface with subtle, reduced-motion-aware animation
 - a build-time `scripts/` area for geometry and coverage tooling
-- a locked pairwise-bridge geometry rule for any future Phase 12 work
-- a separate additive three-station bridge overlay path, plus trio road and selector controls that stay independent from the main coverage toggle
 
-This keeps the app lightweight, maintainable, and easy to run. The current spatial tooling also keeps the station master table and distance analysis in sync.
-
-
-
-
+This keeps the app lightweight, maintainable and easy to run.

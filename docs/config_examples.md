@@ -43,6 +43,20 @@ VITE_WAQI_API_TOKEN=your_token_here
 
 The checked-in `aqi-dashboard/.env.example` file should keep only placeholders.
 
+On Render, use `VITE_WAQI_PROXY_URL=/api/waqi` (set in `render.yaml`).
+
+## Weather
+Temperature and humidity come from Open-Meteo, called directly by the browser. No key or setting is needed.
+
+## Tunable values in code
+| Value | Where | Default |
+|---|---|---|
+| Live reading counts as stale after | `FRESHNESS_WINDOW_MS` in `src/hooks/useLiveAqi.ts` | 6 hours |
+| Nearest-sensor search radius | `NEARBY_SENSOR_MAX_KM` in `src/hooks/useLiveAqi.ts` | 5 km |
+| CPCB server cache (normal / when a reading is due) | `CACHE_TTL_MS` / `CACHE_TTL_WHEN_DUE_MS` in `shared/cpcbFeed.mjs` | 5 min / 1 min |
+| Weather refresh | `CACHE_TTL_MS` in `src/utils/weather.ts` | 10 min |
+| Historical date limits | `HISTORY_MIN_DATE` / `HISTORY_MAX_DATE` in `src/components/ControlBar.tsx` | 2024-01-01 / 2025-12-31 |
+
 ## Example risk scoring config
 See `risk_scoring_config.example.json` for a sample configuration payload.
 

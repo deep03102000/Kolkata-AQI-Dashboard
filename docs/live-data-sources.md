@@ -32,7 +32,7 @@ How the dashboard gets live AQI for the six Kolkata stations, in priority order.
 
 ### How it is served
 
-The API key stays on the server. A shared module fetches the feed, groups records by station and caches the result for 5 minutes:
+The API key stays on the server. A shared module fetches the feed, groups records by station and caches the result:
 
 - `aqi-dashboard/shared/cpcbFeed.mjs`: fetching, parsing and caching
 - served at **`/api/cpcb`** by:
@@ -42,7 +42,12 @@ The API key stays on the server. A shared module fetches the feed, groups record
 
 Without a key, `/api/cpcb` returns `503 not_configured`. The browser then stops asking for the rest of the session and uses sources 2–4.
 
-In the browser, `aqi-dashboard/src/utils/cpcb.ts` loads `/api/cpcb` (cached for 2 minutes), matches stations by name and computes the AQI.
+In the browser, `aqi-dashboard/src/utils/cpcb.ts` loads `/api/cpcb`, matches stations by name and computes the AQI.
+
+### Caching and freshness
+- **Server cache:** 5 minutes normally; **1 minute** once the next hourly reading is due (25 minutes past the hour after the newest reading).
+- **Page load:** the first request after a load or refresh sends `?fresh=1`. The server goes to data.gov.in only if a newer reading could exist and its copy is more than 30 seconds old; otherwise it answers from cache. Reloads therefore show live AQI in about 0.8 s, and a new reading appears within a minute or two of publication.
+- **Browser:** re-asks the server every minute.
 
 ## 2–3. WAQI (fallback)
 

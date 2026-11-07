@@ -64,3 +64,19 @@ This file maps the current dashboard features back to the work that introduced t
 - A trio station selector was added in the sidebar with independent checkbox state and live AQI color swatches.
 - Trio bridge and trio road layers were kept separate from the existing general bridge and road features.
 
+## Phase 13
+- Live AQI now comes first from CPCB's official real-time feed on data.gov.in, served by `/api/cpcb` with the key kept on the server.
+- WAQI's `feed/geo:` lookup was removed after it was found returning Lhasa and Shanghai readings for Kolkata coordinates.
+- A nearest-live-sensor fallback (≤ 5 km, named in the UI) was added for when the official feeds are stale.
+- Every live reading shows its source, and the station card shows when the next hourly CPCB reading is expected.
+- Page reloads fetch newer CPCB data only when it can exist, so reloads are fast.
+
+## Phase 14
+- A control bar at the top of the screen replaced the sidebar mode and date controls, adding a station picker and date presets.
+- Historical mode now shows date-range averages in the comparison table, station list, sidebar card and map popups.
+- The interface was simplified: flat cards, sentence-case labels, an AQI scale on the live card, and table rows with an AQI bar and short source line.
+- CSS-only motion was added (fade-ins, counting numbers, sliding toggle, animated bars), disabled under reduced-motion settings.
+- Loading was made lighter: history files and optional map layers now load only when needed (first open about 70 MB → 7 MB in development mode).
+
+## Phase 15
+- Temperature, "feels like" and humidity were added for each station in Live mode, as Open-Meteo estimates for the station's location, credited in the legend.

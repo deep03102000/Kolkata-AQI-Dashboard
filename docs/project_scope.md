@@ -4,27 +4,31 @@
 - Cleaning and standardizing six station datasets
 - Exporting static JSON for on-demand loading
 - Rendering a Kolkata AQI dashboard in React
-- Showing AQI summaries, circles, coverage overlays, road overlays, dedicated trio bridge/road overlays, and history charts
-- Supporting Live and Historical modes
-- Filtering historical records by date range
-- Comparing all six stations in a table
-- Resolving optional live WAQI data by station UID
-- Marking cached live fallbacks as stale when fresh data is unavailable
-- Using a server-side proxy for WAQI tokens in deployment
-- Keeping the trio selector independent from the main coverage toggle so users can explore the dedicated three-station overlay without changing the rest of the map state
+- Showing AQI summaries, coverage zones, road overlays, 3 km circles, bridge and trio overlays, and pollutant charts
+- Live and Historical modes
+- Filtering history by date range, with quick presets
+- Comparing all six stations in a table, live or as date-range averages
+- Live AQI from CPCB's official real-time feed (data.gov.in), with WAQI and nearest-sensor fallbacks
+- Labelling the source of every live reading and marking stale readings
+- Current temperature and humidity estimates for each station's location (Open-Meteo)
+- Keeping API keys on the server (`/api/cpcb`, `/api/waqi`)
+- A phone-friendly, minimal interface with subtle motion that respects reduced-motion settings
+- Keeping the trio selector independent from the main coverage toggle
 
 ## Out of Scope
-- Real-time sensor streaming directly from the station hardware
-- Backend APIs or a database layer for historical data
+- Readings straight from the station hardware, or CPCB's 15-minute raw data (no public API; it would need CPCB permission)
+- The stations' own temperature and humidity sensors (same reason; model estimates are shown instead)
+- Scraping CPCB's dashboard
+- A database or backend for historical data
 - User accounts or authentication
-- Machine learning forecasting
-- Heavy calendar/date-picker libraries
-- Shipping the WAQI secret token in the browser bundle
+- Forecasting or machine learning
+- Heavy calendar, date-picker or animation libraries
+- Shipping API keys in the browser bundle
 
 ## Design Goals
-- Keep the app lightweight
-- Load chart code only when needed
+- Keep the app lightweight: load data and map layers only when they are needed
+- Prefer official data, and always say where a number comes from
 - Keep station data static and easy to inspect
-- Favor simple, maintainable React components
-- Keep live data optional so the dashboard still works from static files alone
-- Keep stale live fallbacks visible instead of silently presenting them as fresh data
+- Keep the dashboard working if any live source fails
+- Favour simple, maintainable React components
+- Keep stale readings visible instead of presenting them as fresh
