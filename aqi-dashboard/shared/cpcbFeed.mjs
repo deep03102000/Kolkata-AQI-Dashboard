@@ -35,6 +35,19 @@ const POLLUTANT_KEYS = {
 
 let cache = null
 
+/**
+ * Error messages are returned to the browser, and some runtimes (e.g. Deno)
+ * put the full request URL, including api-key, into fetch errors. Strip URLs
+ * and the key before anything leaves the server.
+ */
+function redactSecrets(text, apiKey) {
+  let safe = String(text).replace(/https?:\/\/\S+/g, '[url]').replace(/api-key=[^&\s)]+/gi, 'api-key=[redacted]')
+  if (apiKey) {
+    safe = safe.split(apiKey).join('[redacted]')
+  }
+  return safe
+}
+
 export function getCpcbApiKey(env) {
   return String(env.DATA_GOV_IN_API_KEY ?? '').trim()
 }
@@ -159,9 +172,16 @@ export async function getKolkataCpcbFeed(apiKey, { fresh = false } = {}) {
     if (cache) {
       return { status: 200, body: cache.body }
     }
+    // Include the network-level reason (e.g. ECONNRESET, ETIMEDOUT) so hosting
+    // problems can be told apart from data.gov.in being down.
+    const cause = error instanceof Error && error.cause ? error.cause : null
+    const causeText = cause ? ` (${cause.code ?? cause.name ?? ''}${cause.message ? `: ${cause.message}` : ''})` : ''
     return {
       status: 502,
-      body: { error: 'upstream_failed', message: error instanceof Error ? error.message : 'Unknown error' },
+      body: {
+        error: 'upstream_failed',
+        message: redactSecrets(`${error instanceof Error ? error.message : 'Unknown error'}${causeText}`, apiKey),
+      },
     }
   }
 }

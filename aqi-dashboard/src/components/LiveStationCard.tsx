@@ -1,4 +1,13 @@
-import { type WaqiLiveStationData, formatWaqiTimestamp, getLiveWaqiSummary } from '../utils/waqi'
+import { useMemo } from 'react'
+import {
+  type WaqiLiveStationData,
+  type WaqiPollutantKey,
+  type WaqiResolvedPollutants,
+  formatWaqiTimestamp,
+  getLiveWaqiSummary,
+} from '../utils/waqi'
+import { useStationHistory } from '../hooks/useStationHistory'
+import { getLatestHistoricalPollutants } from '../hooks/useLiveAqi'
 import { LivePollutantGrid } from './LivePollutantGrid'
 import { AnimatedNumber } from './AnimatedNumber'
 import { getNextCpcbReadingLabel } from '../utils/cpcb'
@@ -66,8 +75,34 @@ function WeatherRow({ stationId }: { stationId: string }) {
   )
 }
 
+/**
+ * Pollutants the live source didn't report (e.g. a nearby sensor with PM2.5 only)
+ * are filled with the station's latest recorded value, marked "last known".
+ * The history file is the one the selected station's chart already loads.
+ */
+function usePollutantsWithFallback(stationId: string, pollutants: WaqiResolvedPollutants) {
+  const hasGaps = Object.values(pollutants).some((pollutant) => pollutant.value === null)
+  const { data: history } = useStationHistory(hasGaps ? stationId : null)
+
+  return useMemo(() => {
+    if (!hasGaps || !history) {
+      return pollutants
+    }
+    const latest = getLatestHistoricalPollutants(history.records)
+    const filled = { ...pollutants }
+    for (const key of Object.keys(filled) as WaqiPollutantKey[]) {
+      const value = latest[key]
+      if (filled[key].value === null && value !== undefined && value !== null) {
+        filled[key] = { value, source: 'last known' }
+      }
+    }
+    return filled
+  }, [hasGaps, history, pollutants])
+}
+
 export function LiveStationCard({ stationId, liveData, stale }: Props) {
   const summary = getLiveWaqiSummary(liveData)
+  const pollutants = usePollutantsWithFallback(stationId, liveData.pollutants)
   const updatedAt = formatWaqiTimestamp(liveData.updatedAt)
   const sensor = liveData.nearbySensor ?? null
   const nextReading = liveData.cpcbStation ? getNextCpcbReadingLabel(liveData.updatedAt) : null
@@ -109,7 +144,7 @@ export function LiveStationCard({ stationId, liveData, stale }: Props) {
 
       <WeatherRow stationId={stationId} />
 
-      <LivePollutantGrid pollutants={liveData.pollutants} />
+      <LivePollutantGrid pollutants={pollutants} />
     </div>
   )
 }

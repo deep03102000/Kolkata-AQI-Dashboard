@@ -43,10 +43,6 @@ const LIVE_CACHE_DB_VERSION = 2;
 
 const stationMasterCache = new Map<string, StationGeo>();
 let stationMasterRequest: Promise<StationGeo[]> | null = null;
-const stationFallbackCache = new Map<
-  string,
-  Promise<Partial<WaqiNormalizedPollutants>>
->();
 const waqiLiveCache = new Map<string, LiveAqiResult>();
 const waqiLiveRequestCache = new Map<string, Promise<LiveAqiResult>>();
 let liveCacheDbPromise: Promise<IDBDatabase | null> | null = null;
@@ -175,12 +171,15 @@ async function resolveStationGeo(stationId: string) {
   return stations.find((station) => station.station_id === stationId) ?? null;
 }
 
-function getLatestHistoricalPollutants(
+/** The station's most recent recorded pollutant values (used as "last known"). */
+export function getLatestHistoricalPollutants(
   records: PollutantRecord[],
 ): Partial<WaqiNormalizedPollutants> {
-  const latest = [...records]
-    .sort((left, right) => left.date.localeCompare(right.date))
-    .at(-1);
+  // Records are long (≈70k); find the newest in one pass instead of sorting.
+  const latest = records.reduce<PollutantRecord | undefined>(
+    (newest, record) => (!newest || record.date > newest.date ? record : newest),
+    undefined,
+  );
 
   if (!latest) {
     return {};
@@ -195,32 +194,6 @@ function getLatestHistoricalPollutants(
     o3: latest.o3 ?? null,
     nh3: latest.nh3 ?? null,
   };
-}
-
-async function loadHistoricalFallbackPollutants(stationId: string) {
-  const cached = stationFallbackCache.get(stationId);
-  if (cached) {
-    return cached;
-  }
-
-  const request = fetch(resolveAppUrl(`/data/station_${stationId}.json`), {
-    cache: "no-store",
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to load history for station ${stationId}`);
-      }
-
-      return response.json() as Promise<{ records: PollutantRecord[] }>;
-    })
-    .then((payload) => getLatestHistoricalPollutants(payload.records ?? []))
-    .catch((error) => {
-      stationFallbackCache.delete(stationId);
-      throw error;
-    });
-
-  stationFallbackCache.set(stationId, request);
-  return request;
 }
 
 // WAQI's feed/geo: endpoint returns unrelated cities (Lhasa, Shanghai) for
@@ -469,37 +442,6 @@ async function fetchWaqiStationFeed(
   } satisfies LiveAqiResult;
 }
 
-/**
- * Fills pollutants the live source didn't report with the station's latest
- * historical value (marked "last known"). The history file is only fetched
- * when something is actually missing; CPCB normally reports all seven.
- */
-async function fillMissingPollutants(stationId: string, result: LiveAqiResult) {
-  const pollutants = result.payload.pollutants;
-  const missing = (Object.keys(pollutants) as Array<keyof typeof pollutants>).filter(
-    (key) => pollutants[key].value === null,
-  );
-  if (missing.length === 0) {
-    return result;
-  }
-
-  let fallback: Partial<WaqiNormalizedPollutants>;
-  try {
-    fallback = await loadHistoricalFallbackPollutants(stationId);
-  } catch {
-    return result;
-  }
-
-  const filled = { ...pollutants };
-  for (const key of missing) {
-    const value = fallback[key];
-    if (value !== undefined && value !== null) {
-      filled[key] = { value, source: "last known" };
-    }
-  }
-  return { ...result, payload: { ...result.payload, pollutants: filled } };
-}
-
 async function loadLiveAqi(stationId: string, forceRefresh = false) {
   const inFlight = waqiLiveRequestCache.get(stationId);
   if (inFlight && !forceRefresh) {
@@ -508,8 +450,9 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
 
   const request = (async () => {
     const station = await resolveStationGeo(stationId);
-    // Gaps are filled from history afterwards (fillMissingPollutants), and only when
-    // a live reading actually lacks a pollutant. Each history file is ~8 MB.
+    // Live readings are returned as reported. Pollutants a source didn't report are
+    // filled from history only on the selected station's card (LiveStationCard),
+    // which reuses the history its chart already loads; each file is ~8 MB.
     const fallbackPollutants: Partial<WaqiNormalizedPollutants> = {};
 
     if (!station) {
@@ -529,10 +472,9 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
     }
 
     if (cpcbResult && !cpcbResult.stale) {
-      const complete = await fillMissingPollutants(stationId, cpcbResult);
-      waqiLiveCache.set(stationId, complete);
-      void writeLiveCacheToIndexedDb(stationId, complete);
-      return complete;
+      waqiLiveCache.set(stationId, cpcbResult);
+      void writeLiveCacheToIndexedDb(stationId, cpcbResult);
+      return cpcbResult;
     }
 
     const uid = resolveWaqiUid(station);
@@ -581,9 +523,8 @@ async function loadLiveAqi(stationId: string, forceRefresh = false) {
     }
 
     if (result) {
-      const completed = await fillMissingPollutants(stationId, result);
       const normalizedResult = {
-        ...completed,
+        ...result,
         stale: isWaqiTimestampStale(result.payload.updatedAt, FRESHNESS_WINDOW_MS),
       };
 
