@@ -1,64 +1,61 @@
 # Bridge Concept
 
-A bridge is the overlapping part between two station circles on the map.
+A **bridge** is the area where two stations' 3 km circles overlap: the part of the city that both stations cover.
 
-Each station is shown with a 3 km circle. When two stations are close enough, those circles overlap. That overlap is called a bridge.
+## The idea
 
-## In this project
+- Each station gets a fixed **3 km circle**, its area of influence.
+- Two circles of 3 km overlap only when the stations are **6 km apart or less**. (That is the same as saying the midpoint between them is within 3 km of each.)
+- The overlap is a **lens** shape. That lens is the bridge.
+- **The closer two stations are, the bigger their bridge.** Ballygunge and Jadavpur are 1.9 km apart and share 17 km², 60% of each circle. Fort William and Rabindra Sarobar are 5.8 km apart and share only 0.16 km².
 
-This project has two bridge features:
+Of the 15 possible pairs among the six stations, **7 qualify**:
 
-- The general bridge overlay, which works for all six AQI stations
-- The trio bridge overlay, which works only for these three stations:
-  - Jadavpur
-  - Rabindra Sarobar
-  - Ballygunge
+| Pair | Distance | Shared area | Share of each circle |
+|---|---|---|---|
+| Ballygunge ↔ Jadavpur | 1.91 km | 17.01 km² | 60.2% |
+| Jadavpur ↔ Rabindra Sarobar | 2.33 km | 14.67 km² | 51.9% |
+| Ballygunge ↔ Rabindra Sarobar | 3.15 km | 10.28 km² | 36.4% |
+| Bidhannagar ↔ Rabindra Bharati University | 3.31 km | 9.49 km² | 33.6% |
+| Fort William ↔ Rabindra Bharati University | 3.70 km | 7.59 km² | 26.8% |
+| Ballygunge ↔ Fort William | 5.54 km | 0.71 km² | 2.5% |
+| Fort William ↔ Rabindra Sarobar | 5.83 km | 0.16 km² | 0.6% |
 
-## How to understand it easily
+## Why it is useful
 
-Think of each station as a point with a circle around it.
+- **It shows which stations watch the same ground.** Inside a bridge, both stations' readings are relevant.
+- **Comparing the two readings tells you something.** A small AQI gap means the shared area probably has similar air. A large gap means pollution changes sharply between the two sides, so the shared area is a transition zone worth watching.
+- **It makes the station network's coverage visible:** where it is dense (big overlaps) and where stations stand alone.
 
-- If one station is selected, you see only its circle.
-- If two stations are selected and they are a valid pair, you see both circles and the bridge between them.
-- If all three trio stations are selected, you can see the bridges for the valid pairs among those three stations.
+## How it looks and works
 
-## Why the bridge is useful
+- **Border:** each lens is outlined in two colours, split at its two pointed tips. Each half takes the **AQI colour of the station it is nearer to**, so you can see which side belongs to which station. The border is bold (weight 5) and fully opaque, with no fill, so the map underneath stays readable.
+- **Colours follow the data:** live AQI in Live mode, the date-range average in Historical mode. A dashed half means that station's reading is stale.
+- **Hover a bridge:** it fills lightly in the worse station's colour, both stations' 3 km circles appear as dashed outlines, and a label shows the pair and their distance.
+- **Click a bridge:** a popup shows both stations' AQI (marking the worse one), the distance, the shared area, the share of each circle, the AQI gap and a one-line interpretation.
+- **Select a station:** its bridges stay bold, and the others fade.
+- **Bridge list:** turning on "Station-pair bridges" in the sidebar lists all 7 pairs, closest first, with both AQI values, the distance, the shared area and the gap. Picking one zooms the map to it and opens its popup.
 
-The bridge helps show how stations are connected in space.
+## How it is built
 
-It makes the map easier to read because you can quickly see:
+- **At build time (Turf):**
+  - `npm run bridge:circles` makes the 3 km circles (`public/data/circles_3km.json`).
+  - `npm run bridge:pairs` selects the pairs within 6 km.
+  - `npm run bridge:polygons` intersects each pair's circles into lens polygons (`public/data/bridge_polygons.json`).
+  - Station locations don't move, so this only needs re-running if coordinates change.
+- **In the browser (no Turf):**
+  - `src/utils/bridges.ts` adds exact maths: distance, lens area A = 2r²·acos(d/2r) − (d/2)·√(4r² − d²), and splitting the outline at its tips. The area matches Turf's within 0.3%.
+  - `src/hooks/useBridgePairs.ts` loads the lenses once for the map and the sidebar.
+  - `src/components/BridgeLayer.tsx` draws and handles the map interactions.
+  - `StationSidebar` shows the bridge list.
 
-- which stations are nearby
-- where two station circles overlap
-- how the selected stations relate to each other
+## Two bridge features
 
-## How colors work
+The project has two bridge features, kept independent:
 
-The bridge colors come from the AQI colors of the stations.
-
-This means:
-
-- each station keeps its own AQI color
-- the bridge also reflects those station colors
-- if AQI changes, the colors on the map can change too
-
-If live AQI is not available, the app uses the latest known value it has.
-
-## Simple example
-
-If a user selects Jadavpur and Rabindra Sarobar:
-
-- both station circles appear
-- the bridge appears if that pair is valid
-
-If Ballygunge is also selected:
-
-- the third circle appears
-- any valid trio bridge connections also appear
+- **Station-pair bridges** (this page): all 7 qualifying pairs among the six stations, switched on in Map layers.
+- **Three-station bridges:** only Jadavpur, Rabindra Sarobar and Ballygunge, driven by their own checkboxes, with their own roads layer.
 
 ## Short summary
 
-A bridge is simply the shared area where two station circles overlap.
-It helps users understand nearby stations in a clear and visual way.
-
-The trio bridge is a separate feature from the general bridge overlay, so both should stay independent.
+A bridge is the shared area where two nearby stations' 3 km circles overlap. Its two-coloured border shows each station's AQI, and clicking it compares the two stations to show whether the air across that shared area is likely uniform or changing.

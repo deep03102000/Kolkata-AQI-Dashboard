@@ -8,6 +8,8 @@ import { useStationHistory } from '../hooks/useStationHistory'
 import { getAqiCategory, getHistoricalRangeAqi } from '../utils/aqi'
 import { LiveStationCard } from './LiveStationCard'
 import { AnimatedNumber } from './AnimatedNumber'
+import { useBridgePairs } from '../hooks/useBridgePairs'
+import type { BridgePair } from '../utils/bridges'
 
 type StationGeo = {
   station_id: string
@@ -70,6 +72,69 @@ function AqiChip({ value, loading }: { value: number | null; loading: boolean })
       <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full transition-colors duration-500" style={{ backgroundColor: category.color }} />
       <AnimatedNumber value={value} />
     </span>
+  )
+}
+
+function BridgePairRow({ pair, highlighted, onSelect }: { pair: BridgePair; highlighted: boolean; onSelect: () => void }) {
+  const aqiA = useStationModeAqi(pair.stationIdA)
+  const aqiB = useStationModeAqi(pair.stationIdB)
+  const gap = aqiA.value !== null && aqiB.value !== null ? Math.abs(aqiA.value - aqiB.value) : null
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        className={`w-full rounded-lg px-2 py-1.5 text-left transition-colors duration-200 ${
+          highlighted ? 'bg-slate-100' : 'hover:bg-slate-50'
+        }`}
+      >
+        <span className="flex items-center justify-between gap-2">
+          <span className="min-w-0 truncate text-xs font-medium text-slate-800">
+            {pair.stationNameA} ↔ {pair.stationNameB}
+          </span>
+          <span className="flex shrink-0 items-center gap-1">
+            <AqiChip value={aqiA.value} loading={aqiA.loading} />
+            <AqiChip value={aqiB.value} loading={aqiB.loading} />
+          </span>
+        </span>
+        <span className="mt-0.5 block text-[11px] tabular-nums text-slate-500">
+          {pair.distanceKm.toFixed(1)} km apart · shares {pair.overlapKm2.toFixed(1)} km²
+          {gap !== null ? ` · gap ${gap}` : ''}
+        </span>
+      </button>
+    </li>
+  )
+}
+
+/** All station-pair bridges, closest first; picking one zooms the map to it. */
+function BridgePairList() {
+  const { selectedStationId, focusBridge } = useStationContext()
+  const { pairs, error } = useBridgePairs(true)
+
+  if (error) {
+    return <p className="px-1 text-xs text-rose-600">Bridges could not be loaded.</p>
+  }
+  if (!pairs) {
+    return <SkeletonLine className="mx-1 h-16" />
+  }
+
+  return (
+    <div className="ml-7 mt-1">
+      <p className="mb-1 px-2 text-[11px] text-slate-500">
+        {pairs.length} bridges, closest first. Pick one to zoom to it.
+      </p>
+      <ul className="space-y-0.5">
+        {pairs.map((pair) => (
+          <BridgePairRow
+            key={pair.key}
+            pair={pair}
+            highlighted={pair.stationIdA === selectedStationId || pair.stationIdB === selectedStationId}
+            onSelect={() => focusBridge(pair.key)}
+          />
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -314,8 +379,9 @@ export function StationSidebar() {
             checked={showBridgePolygons}
             onChange={setShowBridgePolygons}
             label="Station-pair bridges"
-            description="Areas linking neighbouring station pairs."
+            description="Where two stations' 3 km circles overlap (stations up to 6 km apart)."
           />
+          {showBridgePolygons ? <BridgePairList /> : null}
         </div>
 
         <TrioStationSelector />

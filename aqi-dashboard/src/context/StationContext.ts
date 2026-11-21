@@ -33,6 +33,9 @@ export type StationContextValue = {
   setSelectedTrioStations: (stationIds: Set<TrioStationId>) => void
   dateRange: DateRange
   setDateRange: (range: DateRange) => void
+  /** Last station-pair bridge picked in the sidebar list; the map zooms to it and opens its details. */
+  focusedBridge: { key: string; at: number } | null
+  focusBridge: (pairKey: string) => void
 }
 
 const StationContext = createContext<StationContextValue | undefined>(undefined)
@@ -49,6 +52,14 @@ export function StationProvider({ children }: { children: ReactNode }) {
     startDate: null,
     endDate: null,
   })
+  // `at` makes picking the same bridge again re-trigger the zoom.
+  const [focusedBridge, setFocusedBridge] = useState<{ key: string; at: number } | null>(null)
+  const focusBridge = useMemo(() => {
+    return (pairKey: string) => {
+      setShowBridgePolygons(true)
+      setFocusedBridge({ key: pairKey, at: Date.now() })
+    }
+  }, [])
 
   // Keep trio selection reactive: each checkbox click updates the Set immediately, so the map repaints with no separate apply step.
   const toggleTrioStationId = useMemo(() => {
@@ -84,10 +95,14 @@ export function StationProvider({ children }: { children: ReactNode }) {
       setSelectedTrioStations,
       dateRange,
       setDateRange,
+      focusedBridge,
+      focusBridge,
     }),
     [
       coverageMode,
       dateRange,
+      focusBridge,
+      focusedBridge,
       mode,
       selectedStationId,
       selectedTrioStations,

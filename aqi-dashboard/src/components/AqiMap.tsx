@@ -484,7 +484,12 @@ export function AqiMap() {
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="Bridge polygons" />}>
             {bridgeLayerRequested ? (
-              <LazyBridgeLayer visible={showBridgePolygons} stationColorMap={stationColorMap} pane="bridge-pane" />
+              <LazyBridgeLayer
+                visible={showBridgePolygons}
+                stationColorMap={stationColorMap}
+                stationSummaries={coverageSummaries}
+                pane="bridge-pane"
+              />
             ) : null}
           </Suspense>
           <Suspense fallback={<LayerLoadingFallback label="3-station roads" />}>
