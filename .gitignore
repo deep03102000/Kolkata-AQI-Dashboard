@@ -12,3 +12,6 @@ aqi-dashboard/public/data/waqi_last_updated_stations.json
 .netlify
 
 .vercel
+
+# One-off helper scripts from another coding tool (not part of the project)
+.codex-*.ps1
